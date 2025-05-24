@@ -1,0 +1,16 @@
+{% extends "public/base.html" %}
+{% block content %}
+<h2>Events</h2>
+{% for event in events %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ event.title }}</h5>
+        {% if event.image %}
+            <img src="{{ url_for('static', filename=event.image) }}" class="img-fluid mb-3" alt="{{ event.title }}">
+        {% endif %}
+        <p class="card-text">{{ event.description | safe }}</p>
+        <p class="card-text"><small>{{ event.event_date }} | {{ event.location }}</small></p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
