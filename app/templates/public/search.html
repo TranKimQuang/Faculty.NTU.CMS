@@ -1,20 +1,52 @@
 {% extends "public/base.html" %}
+
+{% block title %}Search Results - University CMS{% endblock %}
+
 {% block content %}
-<h2>Search Results for "{{ query }}"</h2>
-{% if results %}
-<ul class="list-group">
-    {% for result in results %}
-    <li class="list-group-item">
-        <strong>{{ result.type | capitalize }}</strong>: 
-        <a href="{% if result.type == 'page' %}{{ url_for('main.page', slug=result.item.slug) }}
-                 {% elif result.type == 'post' %}{{ url_for('main.post', slug=result.item.slug) }}
-                 {% else %}{{ url_for('main.events') }}{% endif %}">
-            {{ result.item.title }}
-        </a>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No results found.</p>
-{% endif %}
+    <h2 class="text-center mb-4">Search Results for "{{ query }}"</h2>
+    <section class="mb-5">
+        {% if results %}
+        <div class="row">
+            {% for result in results %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {% if result.type == 'page' %}
+                            <a href="{{ url_for('main.page', slug=result.item.slug) }}">{{ result.item.title }}</a>
+                            {% elif result.type == 'post' %}
+                            <a href="{{ url_for('main.post', slug=result.item.slug) }}">{{ result.item.title }}</a>
+                            {% elif result.type == 'event' %}
+                            {{ result.item.title }}
+                            {% endif %}
+                        </h5>
+                        <p class="card-text">
+                            {% if result.type == 'page' %}
+                            {{ result.item.content | safe | truncate(200) }}
+                            {% elif result.type == 'post' %}
+                            {{ result.item.content | safe | truncate(200) }}
+                            {% elif result.type == 'event' %}
+                            {{ result.item.description | safe | truncate(200) }}
+                            {% endif %}
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                {% if result.type == 'page' %}
+                                Created: {{ result.item.created_at.strftime('%Y-%m-%d') }}
+                                {% elif result.type == 'post' %}
+                                Published: {{ result.item.created_at.strftime('%Y-%m-%d') }}
+                                {% elif result.type == 'event' %}
+                                {{ result.item.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ result.item.location }}
+                                {% endif %}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No results found for "{{ query }}".</p>
+        {% endif %}
+    </section>
 {% endblock %}

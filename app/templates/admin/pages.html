@@ -1,49 +1,63 @@
 {% extends "admin/base.html" %}
+
+{% block title %}Manage Pages - University CMS{% endblock %}
+
 {% block content %}
-<h2>Manage Pages</h2>
-{% if current_user.has_permission('create') %}
-<form method="POST" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" required>
-    </div>
-    <div class="mb-3">
-        <label for="slug" class="form-label">Slug</label>
-        <input type="text" class="form-control" id="slug" name="slug" required>
-    </div>
-    <div class="mb-3">
-        <label for="content" class="form-label">Content</label>
-        <textarea class="form-control ckeditor" id="content" name="content" rows="10"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Create Page</button>
-</form>
-{% endif %}
-<h3>Existing Pages</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Slug</th>
-            {% if current_user.has_permission('edit') %}
-            <th>Actions</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for page in pages %}
-        <tr>
-            <td>{{ page.title }}</td>
-            <td>{{ page.slug }}</td>
-            {% if current_user.has_permission('edit') %}
-            <td>
-                <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                {% if current_user.has_permission('delete') %}
-                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+    <h2 class="text-center mb-4">Manage Pages</h2>
+
+    {% if current_user.has_permission('create') %}
+    <!-- Form to create/edit page -->
+    <form method="POST" action="{% if editing_page %}{{ url_for('pages.edit_page', id=editing_page.id) }}{% else %}{{ url_for('pages.manage_pages') }}{% endif %}">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{% if editing_page %}{{ editing_page.title }}{% endif %}" required>
+        </div>
+        <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" class="form-control" id="slug" name="slug" value="{% if editing_page %}{{ editing_page.slug }}{% endif %}" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_page %}{{ editing_page.content }}{% endif %}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if editing_page %}Update Page{% else %}Create Page{% endif %}</button>
+        {% if editing_page %}
+        <a href="{{ url_for('pages.manage_pages') }}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
+    {% endif %}
+
+    <!-- List of pages -->
+    <h3 class="mt-5 mb-3">Existing Pages</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Slug</th>
+                {% if current_user.has_permission('edit') %}
+                <th>Actions</th>
                 {% endif %}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+            <tr>
+                <td>{{ page.title }}</td>
+                <td>{{ page.slug }}</td>
+                {% if current_user.has_permission('edit') %}
+                <td>
+                    <a href="{{ url_for('pages.edit_page', id=page.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    {% if current_user.has_permission('delete') %}
+                    <a href="{{ url_for('pages.delete_page', id=page.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this page?')">Delete</a>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="{% if current_user.has_permission('edit') %}3{% else %}2{% endif %}" class="text-muted">No pages available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

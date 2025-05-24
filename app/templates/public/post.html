@@ -1,9 +1,21 @@
 {% extends "public/base.html" %}
+
+{% block title %}{{ post.title }} - University CMS{% endblock %}
+
 {% block content %}
-<h2>{{ post.title }}</h2>
-{% if post.image %}
-    <img src="{{ url_for('static', filename=post.image) }}" class="img-fluid mb-3" alt="{{ post.title }}">
-{% endif %}
-<div>{{ post.content | safe }}</div>
-<p><small>Category: {{ post.category.name }} | Published: {{ post.created_at }}</small></p>
+    <h2 class="text-center mb-4">{{ post.title }}</h2>
+    <div class="card">
+        {% if post.image %}
+        <img src="{{ url_for('static', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+        {% endif %}
+        <div class="card-body">
+            <p class="card-text">{{ post.content | safe }}</p>
+            <p class="card-text">
+                <small class="text-muted">
+                    Category: <a href="{{ url_for('main.posts', slug=post.category.slug) }}">{{ post.category.name }}</a> |
+                    Published: {{ post.created_at.strftime('%Y-%m-%d') }}
+                </small>
+            </p>
+        </div>
+    </div>
 {% endblock %}
