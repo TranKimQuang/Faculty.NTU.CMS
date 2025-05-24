@@ -1,0 +1,27 @@
+{% extends "public/base.html" %}
+{% block content %}
+<h2>Welcome to University CMS</h2>
+<h3>Announcements</h3>
+{% for announcement in announcements %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ announcement.title }}</h5>
+        <p class="card-text">{{ announcement.content | safe }}</p>
+        <p class="card-text"><small>From: {{ announcement.start_date }} | To: {{ announcement.end_date }}</small></p>
+    </div>
+</div>
+{% endfor %}
+<h3>Upcoming Events</h3>
+{% for event in events %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ event.title }}</h5>
+        {% if event.image %}
+            <img src="{{ url_for('static', filename=event.image) }}" class="img-fluid mb-3" alt="{{ event.title }}">
+        {% endif %}
+        <p class="card-text">{{ event.description | safe }}</p>
+        <p class="card-text"><small>{{ event.event_date }} | {{ event.location }}</small></p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

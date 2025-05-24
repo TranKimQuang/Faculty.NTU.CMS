@@ -1,0 +1,20 @@
+{% extends "public/base.html" %}
+{% block content %}
+<h2>Search Results for "{{ query }}"</h2>
+{% if results %}
+<ul class="list-group">
+    {% for result in results %}
+    <li class="list-group-item">
+        <strong>{{ result.type | capitalize }}</strong>: 
+        <a href="{% if result.type == 'page' %}{{ url_for('main.page', slug=result.item.slug) }}
+                 {% elif result.type == 'post' %}{{ url_for('main.post', slug=result.item.slug) }}
+                 {% else %}{{ url_for('main.events') }}{% endif %}">
+            {{ result.item.title }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No results found.</p>
+{% endif %}
+{% endblock %}
