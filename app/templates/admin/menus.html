@@ -1,0 +1,62 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h2>Manage Menus</h2>
+{% if current_user.has_permission('create') %}
+<form method="POST">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="url" class="form-label">URL</label>
+        <input type="text" class="form-control" id="url" name="url" required>
+    </div>
+    <div class="mb-3">
+        <label for="parent_id" class="form-label">Parent Menu</label>
+        <select class="form-control" id="parent_id" name="parent_id">
+            <option value="">None</option>
+            {% for menu in menus %}
+            <option value="{{ menu.id }}">{{ menu.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="order" class="form-label">Order</label>
+        <input type="number" class="form-control" id="order" name="order" value="0">
+    </div>
+    <button type="submit" class="btn btn-primary">Create Menu</button>
+</form>
+{% endif %}
+<h3>Existing Menus</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Parent</th>
+            <th>Order</th>
+            {% if current_user.has_permission('edit') %}
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for menu in menus %}
+        <tr>
+            <td>{{ menu.name }}</td>
+            <td>{{ menu.url }}</td>
+            <td>{{ menu.parent.name if menu.parent else 'None' }}</td>
+            <td>{{ menu.order }}</td>
+            {% if current_user.has_permission('edit') %}
+            <td>
+                <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                {% if current_user.has_permission('delete') %}
+                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

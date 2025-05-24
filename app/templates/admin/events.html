@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h2>Manage Events</h2>
+{% if current_user.has_permission('create') %}
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control ckeditor" id="description" name="description" rows="10"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="event_date" class="form-label">Event Date</label>
+        <input type="date" class="form-control" id="event_date" name="event_date" required>
+    </div>
+    <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" name="location" required>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">Create Event</button>
+</form>
+{% endif %}
+<h3>Existing Events</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Location</th>
+            {% if current_user.has_permission('edit') %}
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.event_date }}</td>
+            <td>{{ event.location }}</td>
+            {% if current_user.has_permission('edit') %}
+            <td>
+                <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                {% if current_user.has_permission('delete') %}
+                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
