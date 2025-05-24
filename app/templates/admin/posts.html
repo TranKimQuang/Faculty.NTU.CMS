@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h2>Manage Posts</h2>
+{% if current_user.has_permission('create') %}
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="slug" class="form-label">Slug</label>
+        <input type="text" class="form-control" id="slug" name="slug" required>
+    </div>
+    <div class="mb-3">
+        <label for="category_id" class="form-label">Category</label>
+        <select class="form-control" id="category_id" name="category_id" required>
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Content</label>
+        <textarea class="form-control ckeditor" id="content" name="content" rows="10"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+    {% if current_user.has_permission('edit') %}
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="is_published" name="is_published">
+        <label class="form-check-label" for="is_published">Publish</label>
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Create Post</button>
+</form>
+{% endif %}
+<h3>Existing Posts</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Published</th>
+            {% if current_user.has_permission('edit') %}
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.title }}</td>
+            <td>{{ post.category.name }}</td>
+            <td>{{ 'Yes' if post.is_published else 'No' }}</td>
+            {% if current_user.has_permission('edit') %}
+            <td>
+                <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                {% if current_user.has_permission('delete') %}
+                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
