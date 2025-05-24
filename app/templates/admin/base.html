@@ -1,43 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>University CMS - Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}University CMS - Admin{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Admin Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('main.admin_dashboard') }}">University CMS</a>
-            <div class="navbar-nav">
-                {% if current_user.has_permission('view') %}
-                    <a class="nav-link" href="{{ url_for('main.manage_pages') }}">Pages</a>
-                    <a class="nav-link" href="{{ url_for('main.manage_posts') }}">Posts</a>
-                    <a class="nav-link" href="{{ url_for('main.manage_categories') }}">Categories</a>
-                    <a class="nav-link" href="{{ url_for('main.manage_announcements') }}">Announcements</a>
-                    <a class="nav-link" href="{{ url_for('main.manage_events') }}">Events</a>
-                    <a class="nav-link" href="{{ url_for('main.manage_menus') }}">Menus</a>
-                {% endif %}
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+            <a class="navbar-brand" href="{{ url_for('main.admin_dashboard') }}">University CMS Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if current_user.has_permission('view') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_pages') }}">Pages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_posts') }}">Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_categories') }}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_announcements') }}">Announcements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_events') }}">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_menus') }}">Menus</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages() %}
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info">{{ message }}</div>
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category|default('info') }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
+
+    <!-- CKEditor Initialization -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.ckeditor').forEach(editor => {
-                ClassicEditor.create(editor).catch(error => console.error(error));
+                ClassicEditor
+                    .create(editor, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                            'outdent', 'indent', '|',
+                            'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo'
+                        ],
+                        height: '400px'
+                    })
+                    .catch(error => console.error('CKEditor Error:', error));
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

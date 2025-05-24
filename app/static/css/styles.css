@@ -5,7 +5,7 @@ body {
     color: #333;
 }
 
-/* Navbar Styles */
+/* Navbar Styles (Public and Admin) */
 .navbar {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
@@ -46,7 +46,7 @@ body {
     color: #007bff;
 }
 
-/* Search Form */
+/* Search Form (Public Navbar) */
 .navbar form input {
     border-radius: 20px;
     border: 1px solid #ced4da;
@@ -60,9 +60,22 @@ body {
     font-size: 0.9rem;
 }
 
-/* Main Content */
+/* Admin Navbar Specific */
+.navbar-dark .nav-link {
+    color: #ffffff;
+}
+
+.navbar-dark .nav-link:hover {
+    background-color: #007bff;
+}
+
+/* Main Content (Public and Admin) */
 .container.my-5 {
     padding-top: 2rem;
+}
+
+.container.mt-5.pt-4 {
+    padding-top: 3rem;
 }
 
 h2.text-center {
@@ -78,7 +91,7 @@ h3.mb-3 {
     padding-left: 1rem;
 }
 
-/* Card Styles */
+/* Card Styles (Public) */
 .card {
     border: none;
     border-radius: 10px;
@@ -128,6 +141,48 @@ h3.mb-3 {
     transform: scale(1.05);
 }
 
+/* Flash Messages (Admin) */
+.alert {
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.alert-dismissible .btn-close {
+    padding: 0.75rem;
+}
+
+/* Admin Forms and Tables */
+.form-control, .form-select {
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.btn-sm {
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+}
+
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.table thead {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .navbar-nav {
@@ -149,6 +204,10 @@ h3.mb-3 {
     h3.mb-3 {
         font-size: 1.5rem;
     }
+
+    .container.mt-5.pt-4 {
+        padding-top: 2rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -167,5 +226,9 @@ h3.mb-3 {
 
     .card-img-top {
         max-height: 150px;
+    }
+
+    .table {
+        font-size: 0.9rem;
     }
 }
