@@ -8,3 +8,4 @@ class Config:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Giới hạn file 16MB
     SQLALCHEMY_ECHO = True
+    LOGIN_ENABLED = True

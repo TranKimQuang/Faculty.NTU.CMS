@@ -1,45 +1,35 @@
 {% extends "admin/base.html" %}
 {% block content %}
-<h2>Manage Announcements</h2>
+<h2>Manage Categories</h2>
 {% if current_user.has_permission('create') %}
 <form method="POST">
     <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" name="title" required>
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
     </div>
     <div class="mb-3">
-        <label for="content" class="form-label">Content</label>
-        <textarea class="form-control ckeditor" id="content" name="content" rows="10"></textarea>
+        <label for="slug" class="form-label">Slug</label>
+        <input type="text" class="form-control" id="slug" name="slug" required>
     </div>
-    <div class="mb-3">
-        <label for="start_date" class="form-label">Start Date</label>
-        <input type="date" class="form-control" id="start_date" name="start_date" required>
-    </div>
-    <div class="mb-3">
-        <label for="end_date" class="form-label">End Date</label>
-        <input type="date" class="form-control" id="end_date" name="end_date" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Create Announcement</button>
+    <button type="submit" class="btn btn-primary">Create Category</button>
 </form>
 {% endif %}
-<h3>Existing Announcements</h3>
+<h3>Existing Categories</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th>Name</th>
+            <th>Slug</th>
             {% if current_user.has_permission('edit') %}
             <th>Actions</th>
             {% endif %}
         </tr>
     </thead>
     <tbody>
-        {% for announcement in announcements %}
+        {% for category in categories %}
         <tr>
-            <td>{{ announcement.title }}</td>
-            <td>{{ announcement.start_date }}</td>
-            <td>{{ announcement.end_date }}</td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
             {% if current_user.has_permission('edit') %}
             <td>
                 <a href="#" class="btn btn-sm btn-warning">Edit</a>

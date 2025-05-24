@@ -5,9 +5,9 @@ app = create_app()
 
 with app.app_context():
     # Kiểm tra và thêm người dùng nếu chưa tồn tại
-    if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', role='admin')
-        admin.set_password('admin_password')
+    if not User.query.filter_by(username='admin1').first():
+        admin = User(username='admin1', role='admin')
+        admin.set_password('admin')
         db.session.add(admin)
 
     if not User.query.filter_by(username='editor').first():
