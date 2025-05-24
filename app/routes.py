@@ -1,24 +1,32 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, send_from_directory
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+
 from app import db
 from app.models import Page, Category, Post, Announcement, Event, Menu
 from datetime import datetime
 import os
-from werkzeug.utils import secure_filename
 
 main = Blueprint('main', __name__)
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
-
-# Frontend routes
 @main.route('/')
 def index():
-    announcements = Announcement.query.filter(Announcement.start_date <= datetime.utcnow(),
-                                             Announcement.end_date >= datetime.utcnow()).all()
-    events = Event.query.filter(Event.event_date >= datetime.utcnow()).order_by(Event.event_date).all()
+    announcements = Announcement.query.filter(
+        Announcement.start_date <= datetime.now(),
+        Announcement.end_date >= datetime.now()
+    ).all()
+    events = Event.query.filter(Event.event_date >= datetime.now()).order_by(Event.event_date).all()
+    posts = Post.query.filter_by(is_published=True).order_by(Post.created_at.desc()).limit(6).all()
+    pages = Page.query.order_by(Page.created_at.desc()).limit(6).all()
+    categories = Category.query.order_by(Category.name).all()
     menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
-    return render_template('public/index.html', announcements=announcements, events=events, menus=menus)
+    return render_template('public/index.html',
+                         announcements=announcements,
+                         events=events,
+                         posts=posts,
+                         pages=pages,
+                         categories=categories,
+                         menus=menus)
 
 @main.route('/page/<slug>')
 def page(slug):
@@ -26,9 +34,9 @@ def page(slug):
     menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
     return render_template('public/page.html', page=page, menus=menus)
 
-@main.route('/posts/<category_slug>')
-def posts(category_slug):
-    category = Category.query.filter_by(slug=category_slug).first_or_404()
+@main.route('/posts/<slug>')
+def posts(slug):
+    category = Category.query.filter_by(slug=slug).first_or_404()
     posts = Post.query.filter_by(category_id=category.id, is_published=True).all()
     menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
     return render_template('public/posts.html', category=category, posts=posts, menus=menus)
@@ -41,39 +49,39 @@ def post(slug):
 
 @main.route('/events')
 def events():
-    events = Event.query.order_by(Event.event_date).all()
+    events = Event.query.filter(Event.event_date >= datetime.now()).order_by(Event.event_date).all()
     menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
     return render_template('public/events.html', events=events, menus=menus)
 
 @main.route('/search')
 def search():
     query = request.args.get('q', '')
-    if not query:
-        return render_template('public/search.html', results=[])
     results = []
-    pages = Page.query.filter(Page.title.ilike(f'%{query}%') | Page.content.ilike(f'%{query}%')).all()
-    posts = Post.query.filter(Post.is_published == True, Post.title.ilike(f'%{query}%') | Post.content.ilike(f'%{query}%')).all()
-    events = Event.query.filter(Event.title.ilike(f'%{query}%') | Event.description.ilike(f'%{query}%')).all()
-    results.extend([{'type': 'page', 'item': p} for p in pages])
-    results.extend([{'type': 'post', 'item': p} for p in posts])
-    results.extend([{'type': 'event', 'item': e} for e in events])
-    return render_template('public/search.html', results=results, query=query)
+    if query:
+        pages = Page.query.filter(Page.title.contains(query) | Page.content.contains(query)).all()
+        posts = Post.query.filter(Post.title.contains(query) | Post.content.contains(query), Post.is_published==True).all()
+        events = Event.query.filter(Event.title.contains(query) | Event.description.contains(query)).all()
+        results = [{'type': 'page', 'item': page} for page in pages] + \
+                  [{'type': 'post', 'item': post} for post in posts] + \
+                  [{'type': 'event', 'item': event} for event in events]
+    menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
+    return render_template('public/search.html', query=query, results=results, menus=menus)
+
+@main.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(main.config['UPLOAD_FOLDER'], filename)
 
 @main.route('/admin')
 @login_required
 def admin_dashboard():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
     return render_template('admin/dashboard.html')
 
 @main.route('/admin/pages', methods=['GET', 'POST'])
 @login_required
 def manage_pages():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         title = request.form['title']
         slug = request.form['slug']
         content = request.form['content']
@@ -88,24 +96,21 @@ def manage_pages():
 @main.route('/admin/posts', methods=['GET', 'POST'])
 @login_required
 def manage_posts():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         title = request.form['title']
         slug = request.form['slug']
         content = request.form['content']
         category_id = request.form['category_id']
-        is_published = 'is_published' in request.form and current_user.has_permission('edit')
+        is_published = 'is_published' in request.form
         image = request.files.get('image')
         image_path = None
-        if image and allowed_file(image.filename):
+        if image and image.filename:
             filename = secure_filename(image.filename)
-            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            image.save(image_path)
+            image.save(os.path.join(main.config['UPLOAD_FOLDER'], filename))
             image_path = f'uploads/{filename}'
-        post = Post(title=title, slug=slug, content=content, category_id=category_id,
-                    is_published=is_published, image=image_path)
+        post = Post(title=title, slug=slug, content=content, category_id=category_id, is_published=is_published, image=image_path)
         db.session.add(post)
         db.session.commit()
         flash('Post created successfully!')
@@ -117,10 +122,9 @@ def manage_posts():
 @main.route('/admin/categories', methods=['GET', 'POST'])
 @login_required
 def manage_categories():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         name = request.form['name']
         slug = request.form['slug']
         category = Category(name=name, slug=slug)
@@ -134,10 +138,9 @@ def manage_categories():
 @main.route('/admin/announcements', methods=['GET', 'POST'])
 @login_required
 def manage_announcements():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
         start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
@@ -153,23 +156,20 @@ def manage_announcements():
 @main.route('/admin/events', methods=['GET', 'POST'])
 @login_required
 def manage_events():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
         event_date = datetime.strptime(request.form['event_date'], '%Y-%m-%d')
         location = request.form['location']
         image = request.files.get('image')
         image_path = None
-        if image and allowed_file(image.filename):
+        if image and image.filename:
             filename = secure_filename(image.filename)
-            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            image.save(image_path)
+            image.save(os.path.join(main.config['UPLOAD_FOLDER'], filename))
             image_path = f'uploads/{filename}'
-        event = Event(title=title, description=description, event_date=event_date,
-                      location=location, image=image_path)
+        event = Event(title=title, description=description, event_date=event_date, location=location, image=image_path)
         db.session.add(event)
         db.session.commit()
         flash('Event created successfully!')
@@ -180,13 +180,12 @@ def manage_events():
 @main.route('/admin/menus', methods=['GET', 'POST'])
 @login_required
 def manage_menus():
-    if not current_user.has_permission('view'):
-        flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
-    if request.method == 'POST' and current_user.has_permission('create'):
+    if not current_user.has_permission('create'):
+        abort(403)
+    if request.method == 'POST':
         name = request.form['name']
         url = request.form['url']
-        parent_id = request.form.get('parent_id') or None
+        parent_id = request.form['parent_id'] or None
         order = request.form['order']
         menu = Menu(name=name, url=url, parent_id=parent_id, order=order)
         db.session.add(menu)
