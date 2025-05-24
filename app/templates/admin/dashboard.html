@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, {{ current_user.username }}!</p>
+<p>Your role: {{ current_user.role }}</p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Manage Pages</h5>
+                <p class="card-text">Create and edit static pages.</p>
+                <a href="{{ url_for('main.manage_pages') }}" class="btn btn-primary">Go to Pages</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Manage Posts</h5>
+                <p class="card-text">Create and edit news posts.</p>
+                <a href="{{ url_for('main.manage_posts') }}" class="btn btn-primary">Go to Posts</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Manage Events</h5>
+                <p class="card-text">Create and edit events.</p>
+                <a href="{{ url_for('main.manage_events') }}" class="btn btn-primary">Go to Events</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
