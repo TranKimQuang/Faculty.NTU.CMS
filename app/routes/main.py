@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, flash, url_for
 from datetime import datetime
 from app import db
-from app.models import Page, Category, Post, Announcement, Event, Menu
+from app.decorators import admin_required
+from app.models import Page, Category, Post, Announcement, Event, Menu, Setting
 
 main = Blueprint('main', __name__)
 
@@ -41,7 +42,24 @@ def page(slug):
     page = Page.query.filter_by(slug=slug).first_or_404()
     common_data = get_common_data()
     return render_template('public/page.html', page=page, **common_data)
+@main.route('/settings', methods=['GET', 'POST'])
+@admin_required
+def settings():
+    if request.method == 'POST':
+        key = request.form.get('key')
+        value = request.form.get('value')
+        setting = Setting.query.filter_by(key=key).first()
+        if setting:
+            setting.value = value
+        else:
+            setting = Setting(key=key, value=value)
+            db.session.add(setting)
+        db.session.commit()
+        flash('Setting updated successfully.', 'success')
+        return redirect(url_for('main.settings'))
 
+    settings = Setting.query.all()
+    return render_template('admin/settings.html', settings=settings)
 @main.route('/posts/<slug>')
 def posts(slug):
     category = Category.query.filter_by(slug=slug).first_or_404()

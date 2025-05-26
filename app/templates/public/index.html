@@ -3,68 +3,69 @@
 {% block title %}Home - Faculty NTU CMS{% endblock %}
 
 {% block content %}
-<div class="maincontent" id="maincontent">
+<div class="maincontent">
     <div class="container mt-5 pt-4">
         <div class="row">
             <!-- Left column: Posts, Pages, Events -->
             <div class="col-md-8">
-                <!-- Latest Posts Section -->
-                <section class="mb-5">
-                    <h3 class="mb-3">Latest Posts</h3>
-                    <div class="row">
-                        {% for post in posts %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100 hover-effect">
-                                {% if post.image %}
-                                <img src="{{ url_for('static', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
-                                {% endif %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ post.title }}</h5>
-                                    <p class="card-text">{{ post.content | safe | truncate(200) }}</p>
-                                    <a href="{{ url_for('main.post', slug=post.slug) }}" class="btn btn-primary btn-sm">Read More</a>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">
-                                        Category: {{ post.category.name }} | Published: {{ post.created_at.strftime('%Y-%m-%d') }}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="col-12">
-                            <p class="text-muted">No posts available.</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </section>
-
-                <!-- Pages Section -->
-                <section class="mb-5">
-                    <h3 class="mb-3">Pages</h3>
-                    <div class="row">
-                        {% for page in pages %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100 hover-effect">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ page.title }}</h5>
-                                    <p class="card-text">{{ page.content | safe | truncate(200) }}</p>
-                                    <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">View Page</a>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">Created: {{ page.created_at.strftime('%Y-%m-%d') }}</small>
+                <div class="left-panel">
+                    <!-- Latest Posts Section -->
+                    <section class="mb-5">
+                        <h3 class="mb-3">Latest Posts</h3>
+                        <div class="row">
+                            {% for post in posts %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 hover-effect">
+                                    {% if post.image %}
+                                    <img src="{{ url_for('static', filename=post.image) }}" class="card-img-top" alt="{{ post.title }}">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ post.title }}</h5>
+                                        <p class="card-text">{{ post.content | safe | truncate(200) }}</p>
+                                        <a href="{{ url_for('main.post', slug=post.slug) }}" class="btn btn-primary btn-sm">Read More</a>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-muted">
+                                            Category: {{ post.category.name }} | Published: {{ post.created_at.strftime('%Y-%m-%d') }}
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="col-12">
+                                <p class="text-muted">No posts available.</p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% else %}
-                        <div class="col-12">
-                            <p class="text-muted">No pages available.</p>
+                    </section>
+
+                    <!-- Pages Section -->
+                    <section class="mb-5">
+                        <h3 class="mb-3">Pages</h3>
+                        <div class="row">
+                            {% for page in pages %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 hover-effect">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ page.title }}</h5>
+                                        <p class="card-text">{{ page.content | safe | truncate(200) }}</p>
+                                        <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">View Page</a>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-muted">Created: {{ page.created_at.strftime('%Y-%m-%d') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="col-12">
+                                <p class="text-muted">No pages available.</p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Upcoming Events Section -->
 
+                </div>
             </div>
 
             <!-- Right column: Announcements -->
@@ -86,33 +87,34 @@
                         {% endfor %}
                     </div>
                 </section>
-                <section class="mb-5">
-                    <h3 class="mb-3">Upcoming Events</h3>
-                    <div class="row">
-                        {% for event in events %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100 hover-effect">
-                                {% if event.image %}
-                                <img src="{{ url_for('static', filename=event.image) }}" class="card-img-top" alt="{{ event.title }}">
-                                {% endif %}
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ event.title }}</h5>
-                                    <p class="card-text">{{ event.description | safe | truncate(200) }}</p>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            {{ event.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ event.location }}
-                                        </small>
-                                    </p>
+                 <!-- Upcoming Events Section -->
+                    <section class="mb-5">
+                        <h3 class="mb-3">Upcoming Events</h3>
+                        <div class="row">
+                            {% for event in events %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 hover-effect">
+                                    {% if event.image %}
+                                    <img src="{{ url_for('static', filename=event.image) }}" class="card-img-top" alt="{{ event.title }}">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ event.title }}</h5>
+                                        <p class="card-text">{{ event.description | safe | truncate(200) }}</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                {{ event.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ event.location }}
+                                            </small>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                            {% else %}
+                            <div class="col-12">
+                                <p class="text-muted">No upcoming events.</p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% else %}
-                        <div class="col-12">
-                            <p class="text-muted">No upcoming events.</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </section>
+                    </section>
             </div>
         </div>
     </div>

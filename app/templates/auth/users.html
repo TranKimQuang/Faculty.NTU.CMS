@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% block title %}User Management - Nha Trang University CMS{% endblock %}
+{% block content %}
+<div class="maincontent">
+    <div class="container my-5 pt-5">
+        <h2>User Management</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Form to create new user -->
+        <div class="card mb-4 shadow-sm hover-effect">
+            <div class="card-body">
+                <h5 class="card-title">Add New User</h5>
+                <form method="POST" action="{{ url_for('auth.users') }}">
+                    <input type="hidden" name="create" value="1">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="user">User</option>
+                            <option value="editor">Editor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- List of users -->
+        <h3>Users</h3>
+        <div class="row">
+            {% for user in users %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm hover-effect">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <p class="card-text">Role: {{ user.role }}</p>
+                        <form method="POST" action="{{ url_for('auth.users') }}" style="display:inline;">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="hidden" name="update" value="1">
+                            <div class="mb-2">
+                                <input type="text" class="form-control mb-2" name="username" value="{{ user.username }}" required>
+                                <input type="password" class="form-control mb-2" name="password" placeholder="New password (leave blank to keep)">
+                                <select class="form-control mb-2" name="role" required>
+                                    <option value="editor" {% if user.role == 'editor' %}selected{% endif %}>Editor</option>
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-sm">Update</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('auth.users') }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ user.username }}?');">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="hidden" name="delete" value="1">
+                            <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

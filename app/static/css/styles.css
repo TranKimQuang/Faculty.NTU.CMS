@@ -1,170 +1,203 @@
-       /* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
-        body {
-            background: linear-gradient(to bottom, #007bff, #ffffff);
-            min-height: 100vh;
-        }
-        .navbar {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .maincontent {
-            padding: 20px;
-            border-radius: 10px;
-            min-height: 100vh;
-            background: transparent; /* Loại bỏ nền cũ của maincontent */
-        }
-        .card, .list-group-item {
-            transition: transform 0.2s, box-shadow 0.2s;
-            background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để dễ đọc */
-        }
-        .hover-effect:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-        }
-        .card-img-top {
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            max-height: 200px;
-            object-fit: cover;
-        }
-        .list-group-item {
-            border-radius: 8px;
-        }
+/* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
+body {
+    background: linear-gradient(to bottom, #007bff, #ffffff);
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
 
-        /* Navbar Styles */
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #ffffff;
-        }
-        .nav-link {
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            color: #ffffff;
-            transition: color 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #000000 !important;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
-        .dropdown-menu {
-            border: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 0;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        .dropdown-item {
-            font-size: 0.95rem;
-            padding: 0.5rem 1.5rem;
-            transition: background-color 0.2s ease;
-        }
-        .dropdown-item:hover {
-            background-color: #e9ecef;
-            color: #007bff;
-        }
+.maincontent {
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 100vh;
+    background: transparent; /* Loại bỏ nền cũ của maincontent */
+}
 
-        /* Search Form */
-        .navbar form input {
-            border-radius: 20px;
-            border: 1px solid #ced4da;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            background: rgba(255, 255, 255, 0.8);
-            color: #000000;
-        }
-        .navbar form button {
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            border: 1px solid #ffffff;
-        }
-        .navbar form button:hover {
-            background: rgba(255, 255, 255, 0.4);
-            color: #000000;
-        }
+/* Khung bao quanh phần bên trái */
+.left-panel {
+    background: rgba(245, 245, 245, 0.9); /* Màu trắng bạc nhẹ */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(200, 200, 200, 0.5); /* Viền nhẹ */
+}
 
-        /* Main Content */
-        .container.mt-5.pt-4 {
-            padding-top: 3rem;
-        }
-        h3.mb-3 {
-            font-weight: 600;
-            color: #343a40;
-            border-left: 4px solid #007bff;
-            padding-left: 1rem;
-        }
+.card, .list-group-item {
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để dễ đọc */
+}
 
-        /* Card Styles */
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #343a40;
-        }
-        .card-text {
-            font-size: 0.95rem;
-            color: #6c757d;
-        }
-        .card-footer {
-            background: transparent;
-            border-top: none;
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-        .btn-primary {
-            border-radius: 20px;
-            padding: 0.4rem 1.2rem;
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
+.hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
 
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .navbar-nav {
-                padding: 1rem 0;
-            }
-            .nav-link {
-                padding: 0.5rem 1.5rem;
-            }
-            .card {
-                margin-bottom: 1.5rem;
-            }
-            h3.mb-3 {
-                font-size: 1.5rem;
-            }
-            .container.mt-5.pt-4 {
-                padding-top: 2rem;
-            }
-        }
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    max-height: 200px;
+    object-fit: cover;
+}
 
-        @media (max-width: 576px) {
-            .navbar form {
-                width: 100%;
-                margin-top: 1rem;
-            }
-            .navbar form input {
-                width: 70%;
-            }
-            .navbar form button {
-                width: 30%;
-            }
-            .card-img-top {
-                max-height: 150px;
-            }
-        }
+.list-group-item {
+    border-radius: 8px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(to right, #333333, #555555); /* Gradient đen bạc */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #000000 !important;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 0;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.dropdown-item {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #e9ecef;
+    color: #007bff;
+}
+
+/* Search Form */
+.navbar form input {
+    border-radius: 20px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.8);
+    color: #000000;
+}
+
+.navbar form button {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+.navbar form button:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #000000;
+}
+
+/* Main Content */
+.container.mt-5.pt-4 {
+    padding-top: 3rem;
+}
+
+h3.mb-3 {
+    font-weight: 600;
+    color: #343a40;
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.card-text {
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+.card-footer {
+    background: transparent;
+    border-top: none;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.btn-primary {
+    border-radius: 20px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        padding: 1rem 0;
+    }
+    .nav-link {
+        padding: 0.5rem 1.5rem;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    h3.mb-3 {
+        font-size: 1.5rem;
+    }
+    .container.mt-5.pt-4 {
+        padding-top: 2rem;
+    }
+    .left-panel {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar form {
+        width: 100%;
+        margin-top: 1rem;
+    }
+    .navbar form input {
+        width: 70%;
+    }
+    .navbar form button {
+        width: 30%;
+    }
+    .card-img-top {
+        max-height: 150px;
+    }
+}

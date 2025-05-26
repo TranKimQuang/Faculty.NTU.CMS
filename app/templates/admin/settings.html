@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings - Nha Trang University CMS{% endblock %}
+{% block content %}
+<div class="maincontent">
+    <div class="container my-5 pt-5">
+        <h2>Settings</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Form to add/edit settings -->
+        <form method="POST" action="{{ url_for('main.settings') }}" class="mb-4">
+            <div class="mb-3">
+                <label for="key" class="form-label">Key</label>
+                <input type="text" class="form-control" id="key" name="key" required>
+            </div>
+            <div class="mb-3">
+                <label for="value" class="form-label">Value</label>
+                <input type="text" class="form-control" id="value" name="value" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Setting</button>
+        </form>
+
+        <!-- List existing settings -->
+        <h3>Existing Settings</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for setting in settings %}
+                <tr>
+                    <td>{{ setting.key }}</td>
+                    <td>{{ setting.value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
