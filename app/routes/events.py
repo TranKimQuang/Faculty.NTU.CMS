@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required
 from app import db
+from app.decorators import admin_required
 from app.models import Event
 from datetime import datetime
 import os
@@ -11,6 +12,7 @@ events = Blueprint('events', __name__)
 
 @events.route('/events', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def manage_events():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -45,6 +47,7 @@ def manage_events():
 
 @events.route('/events/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_event(id):
     event = Event.query.get_or_404(id)
 
@@ -74,6 +77,7 @@ def edit_event(id):
 
 @events.route('/events/delete/<int:id>')
 @login_required
+@admin_required
 def delete_event(id):
     event = Event.query.get_or_404(id)
     if event.image and os.path.exists(os.path.join(current_app.config['UPLOAD_FOLDER'], event.image.split('/')[-1])):

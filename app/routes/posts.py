@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required
 from app import db
+from app.decorators import admin_required
 from app.models import Post, Category
 from datetime import datetime
 import os
@@ -44,11 +45,12 @@ def manage_posts():
 
     posts = Post.query.order_by(Post.created_at.desc()).all()
     categories = Category.query.order_by(Category.name).all()
-    return render_template('admin/posts.html', posts=posts, categories=categories)
+    return render_template('public/post_detail.html', posts=posts, categories=categories)
 
 
 @posts.route('/posts/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_post(id):
     post = Post.query.get_or_404(id)
 
