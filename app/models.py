@@ -1,3 +1,5 @@
+from _pydatetime import datetime
+
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
@@ -28,6 +30,18 @@ class Setting(db.Model):
 
     def __repr__(self):
         return f'<Setting {self.key}: {self.value}>'
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    user = db.relationship('User', backref='comments')
+    post = db.relationship('Post', backref='comments')
+
+    def __repr__(self):
+        return f'<Comment {self.id} by {self.user.username} on Post {self.post_id}>'
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)

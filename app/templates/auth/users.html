@@ -58,6 +58,7 @@
                                 <input type="text" class="form-control mb-2" name="username" value="{{ user.username }}" required>
                                 <input type="password" class="form-control mb-2" name="password" placeholder="New password (leave blank to keep)">
                                 <select class="form-control mb-2" name="role" required>
+                                    <option value="user" {% if user.role == 'viewer' %}selected{% endif %}></option>
                                     <option value="editor" {% if user.role == 'editor' %}selected{% endif %}>Editor</option>
                                     <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
                                 </select>

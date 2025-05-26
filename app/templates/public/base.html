@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Nha Trang University CMS{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,17 +25,9 @@
                         {% set first_category = categories[0] if categories else None %}
                         <a class="nav-link" href="{{ url_for('main.posts', slug=first_category.slug) if first_category else '#' }}">Posts</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Pages
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="pagesDropdown">
-                            {% for page in pages %}
-                            <li><a class="dropdown-item" href="{{ url_for('main.page', slug=page.slug) }}">{{ page.title }}</a></li>
-                            {% else %}
-                            <li><span class="dropdown-item text-muted">No pages available</span></li>
-                            {% endfor %}
-                        </ul>
+                    <li class="nav-item">
+                        {% set first_category = categories[0] if categories else None %}
+                        <a class="nav-link" href="{{ url_for('main.page', slug=first_category.slug) if first_category else '#' }}">Pages</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,6 +43,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.events') }}">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                     </li>
                 </ul>
                 <form class="d-flex" action="{{ url_for('main.search') }}" method="GET">
