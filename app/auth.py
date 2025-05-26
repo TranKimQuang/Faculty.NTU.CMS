@@ -48,7 +48,7 @@ def login():
                 print("Password check passed (from debug variable)")
                 login_user(user)
                 flash('Login successful!')
-                return redirect(url_for('main.admin_dashboard'))
+                return redirect(url_for('admin.admin_dashboard'))
             else:
                 print("Password check failed (from debug variable)")
                 flash('Invalid username or password.')

@@ -1,62 +1,78 @@
 {% extends "admin/base.html" %}
+
+{% block title %}Manage Menus - University CMS{% endblock %}
+
 {% block content %}
-<h2>Manage Menus</h2>
-{% if current_user.has_permission('create') %}
-<form method="POST">
-    <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-    </div>
-    <div class="mb-3">
-        <label for="url" class="form-label">URL</label>
-        <input type="text" class="form-control" id="url" name="url" required>
-    </div>
-    <div class="mb-3">
-        <label for="parent_id" class="form-label">Parent Menu</label>
-        <select class="form-control" id="parent_id" name="parent_id">
-            <option value="">None</option>
-            {% for menu in menus %}
-            <option value="{{ menu.id }}">{{ menu.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="order" class="form-label">Order</label>
-        <input type="number" class="form-control" id="order" name="order" value="0">
-    </div>
-    <button type="submit" class="btn btn-primary">Create Menu</button>
-</form>
-{% endif %}
-<h3>Existing Menus</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>URL</th>
-            <th>Parent</th>
-            <th>Order</th>
-            {% if current_user.has_permission('edit') %}
-            <th>Actions</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for menu in menus %}
-        <tr>
-            <td>{{ menu.name }}</td>
-            <td>{{ menu.url }}</td>
-            <td>{{ menu.parent.name if menu.parent else 'None' }}</td>
-            <td>{{ menu.order }}</td>
-            {% if current_user.has_permission('edit') %}
-            <td>
-                <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                {% if current_user.has_permission('delete') %}
-                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+    <h2 class="text-center mb-4">Manage Menus</h2>
+
+    {% if current_user.has_permission('create') %}
+    <!-- Form to create/edit menu -->
+    <form method="POST" action="{% if editing_menu %}{{ url_for('menus.edit_menu', id=editing_menu.id) }}{% else %}{{ url_for('menus.manage_menus') }}{% endif %}">
+        <div class="mb-3">
+            <label for="name" class="form-label">Menu Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{% if editing_menu %}{{ editing_menu.name }}{% endif %}" required>
+        </div>
+        <div class="mb-3">
+            <label for="url" class="form-label">URL</label>
+            <input type="text" class="form-control" id="url" name="url" value="{% if editing_menu %}{{ editing_menu.url }}{% endif %}" required>
+        </div>
+        <div class="mb-3">
+            <label for="order" class="form-label">Order</label>
+            <input type="number" class="form-control" id="order" name="order" value="{% if editing_menu %}{{ editing_menu.order }}{% endif %}" required>
+        </div>
+        <div class="mb-3">
+            <label for="parent_id" class="form-label">Parent Menu</label>
+            <select class="form-control" id="parent_id" name="parent_id">
+                <option value="">None</option>
+                {% for menu in menus %}
+                {% if editing_menu and editing_menu.id != menu.id %}
+                <option value="{{ menu.id }}" {% if editing_menu and editing_menu.parent_id == menu.id %}selected{% endif %}>{{ menu.name }}</option>
                 {% endif %}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if editing_menu %}Update Menu{% else %}Create Menu{% endif %}</button>
+        {% if editing_menu %}
+        <a href="{{ url_for('menus.manage_menus') }}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
+    {% endif %}
+
+    <!-- List of existing menus -->
+    <h3 class="mt-5 mb-3">Existing Menus</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Order</th>
+                <th>Parent</th>
+                {% if current_user.has_permission('edit') %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for menu in menus %}
+            <tr>
+                <td>{{ menu.name }}</td>
+                <td>{{ menu.url }}</td>
+                <td>{{ menu.order }}</td>
+                <td>{{ menu.parent.name if menu.parent else 'None' }}</td>
+                {% if current_user.has_permission('edit') %}
+                <td>
+                    <a href="{{ url_for('menus.edit_menu', id=menu.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    {% if current_user.has_permission('delete') %}
+                    <a href="{{ url_for('menus.delete_menu', id=menu.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this menu?')">Delete</a>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="{% if current_user.has_permission('edit') %}5{% else %}4{% endif %}" class="text-muted">No menus available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends "public/base.html" %}
+
+{% block title %}Announcements - Faculty NTU CMS{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Announcements</h2>
+
+        {% if announcements %}
+        <div class="row">
+            {% for announcement in announcements %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if announcement.image %}
+                    <img src="{{ url_for('static', filename=announcement.image) }}" class="card-img-top" alt="{{ announcement.title }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ announcement.title }}</h5>
+                        <p class="card-text">{{ announcement.content | safe }}</p>
+                        <p class="text-muted">
+                            <small>
+                                From: {{ announcement.start_date.strftime('%Y-%m-%d') }} <br>
+                                To: {{ announcement.end_date.strftime('%Y-%m-%d') }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center">No announcements available at this time.</p>
+        {% endif %}
+    </div>
+{% endblock %}

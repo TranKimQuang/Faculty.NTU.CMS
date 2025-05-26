@@ -27,7 +27,15 @@ def index():
                          events=events,
                          posts=posts,
                          **common_data)
-
+@main.route('/announcements')
+def announcements():
+    current_date = datetime.now()
+    announcements = Announcement.query.filter(
+        Announcement.start_date <= current_date,
+        Announcement.end_date >= current_date
+    ).order_by(Announcement.start_date.desc()).all()
+    menus = Menu.query.filter_by(parent_id=None).order_by(Menu.order).all()
+    return render_template('public/announcements.html', announcements=announcements, menus=menus)
 @main.route('/page/<slug>')
 def page(slug):
     page = Page.query.filter_by(slug=slug).first_or_404()
