@@ -6,7 +6,8 @@ body {
 }
 
 .maincontent {
-    padding: 20px;
+
+
     border-radius: 10px;
     min-height: 100vh;
     background: transparent; /* Loại bỏ nền cũ của maincontent */
@@ -52,6 +53,7 @@ body {
     font-weight: 700;
     font-size: 1.5rem;
     color: #ffffff;
+
 }
 
 .nav-link {
@@ -110,9 +112,46 @@ body {
     color: #000000;
 }
 
-/* Main Content */
-.container.mt-5.pt-4 {
-    padding-top: 3rem;
+/* Thêm CSS cho thông báo chào mừng */
+.welcome-message {
+    text-align: center; /* Căn giữa văn bản */
+    padding: 20px 0; /* Thêm padding trên dưới */
+    margin-bottom: 30px; /* Khoảng cách dưới thông báo */
+    color: #0056b3; /* Màu chữ mặc định */
+    font-size: 2.5rem; /* Kích thước chữ lớn */
+    font-weight: bold; /* Chữ đậm */
+    text-transform: uppercase; /* Chữ in hoa */
+    background: linear-gradient(to right, #007bff, #00c6ff, #007bff); /* Gradient màu chữ */
+    -webkit-background-clip: text; /* Cắt nền theo chữ */
+    background-clip: text;
+    -webkit-text-fill-color: transparent; /* Làm chữ trong suốt để thấy nền */
+    animation: pulse 2s infinite alternate; /* Áp dụng hiệu ứng nhấp nháy */
+}
+
+/* Định nghĩa hiệu ứng nhấp nháy (keyframe animation) */
+@keyframes pulse {
+    0% {
+        opacity: 0.7; /* Bắt đầu với độ mờ */
+        transform: scale(1);
+        filter: brightness(100%);
+    }
+    50% {
+        opacity: 1; /* Sáng hơn và to hơn một chút */
+        transform: scale(1.02);
+        filter: brightness(150%);
+    }
+    100% {
+        opacity: 0.7; /* Quay lại độ mờ ban đầu */
+        transform: scale(1);
+        filter: brightness(100%);
+    }
+}
+
+
+/* Cần sửa lại cái này cho đúng selector */
+.container.my-5.pt-4 { /* Đã sửa selector: .container.my-5.pt-4 */
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 h3.mb-3 {

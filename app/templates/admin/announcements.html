@@ -24,15 +24,6 @@
             <label for="end_date" class="form-label">End Date</label>
             <input type="date" class="form-control" id="end_date" name="end_date" value="{% if editing_announcement %}{{ editing_announcement.end_date.strftime('%Y-%m-%d') }}{% endif %}" required>
         </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-            {% if editing_announcement and editing_announcement.image %}
-            <p class="mt-2">
-                <small>Current image: <a href="{{ url_for('static', filename=editing_announcement.image) }}" target="_blank">{{ editing_announcement.image }}</a></small>
-            </p>
-            {% endif %}
-        </div>
         <button type="submit" class="btn btn-primary">{% if editing_announcement %}Update Announcement{% else %}Create Announcement{% endif %}</button>
         {% if editing_announcement %}
         <a href="{{ url_for('announcements.manage_announcements') }}" class="btn btn-secondary">Cancel</a>
