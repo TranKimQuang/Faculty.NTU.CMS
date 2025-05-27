@@ -1,0 +1,36 @@
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Liên hệ</h5>
+                <p>
+                    {% if settings_map.address %}
+                        {{ settings_map.address | safe }}
+                    {% else %}
+                        Địa chỉ: [Chưa có thông tin]
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h5>Thông tin</h5>
+                <p>
+                    {% if settings_map.email %}
+                        Email: <a href="mailto:{{ settings_map.email }}">{{ settings_map.email }}</a>
+                    {% else %}
+                        Email: [Chưa có thông tin]
+                    {% endif %}
+                    <br>
+                    {% if settings_map.phone %}
+                        Điện thoại: {{ settings_map.phone }}
+                    {% else %}
+                        Điện thoại: [Chưa có thông tin]
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h5>Bản quyền</h5>
+                <p class="text-muted">&copy;  {% if settings_map.site_title %}{{ settings_map.site_title }}{% else %}Nha Trang University CMS{% endif %}. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
