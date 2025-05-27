@@ -15,7 +15,7 @@
                             {% if result.type == 'page' %}
                             <a href="{{ url_for('main.page', slug=result.item.slug) }}">{{ result.item.title }}</a>
                             {% elif result.type == 'post' %}
-                            <a href="{{ url_for('main.post', slug=result.item.slug) }}">{{ result.item.title }}</a>
+                            <a href="{{ url_for('main.posts', slug=result.item.slug) }}">{{ result.item.title }}</a>
                             {% elif result.type == 'event' %}
                             {{ result.item.title }}
                             {% endif %}
