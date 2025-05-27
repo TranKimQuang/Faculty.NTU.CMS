@@ -11,8 +11,7 @@ events = Blueprint('events', __name__)
 
 
 @events.route('/events', methods=['GET', 'POST'])
-@login_required
-@admin_required
+
 def manage_events():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -46,7 +45,6 @@ def manage_events():
 
 
 @events.route('/events/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
 @admin_required
 def edit_event(id):
     event = Event.query.get_or_404(id)
@@ -76,7 +74,6 @@ def edit_event(id):
 
 
 @events.route('/events/delete/<int:id>')
-@login_required
 @admin_required
 def delete_event(id):
     event = Event.query.get_or_404(id)

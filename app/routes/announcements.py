@@ -11,7 +11,6 @@ announcements = Blueprint('announcements', __name__)
 
 
 @announcements.route('/announcements', methods=['GET', 'POST'])
-@login_required
 @admin_required
 def manage_announcements():
     if request.method == 'POST':
@@ -27,11 +26,6 @@ def manage_announcements():
             announcement = Announcement(title=title, content=content,
                                         start_date=datetime.strptime(start_date, '%Y-%m-%d'),
                                         end_date=datetime.strptime(end_date, '%Y-%m-%d'))
-            if image and image.filename:
-                filename = secure_filename(image.filename)
-                image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                image.save(image_path)
-                announcement.image = f'uploads/{filename}'
 
             db.session.add(announcement)
             db.session.commit()
@@ -43,7 +37,6 @@ def manage_announcements():
 
 
 @announcements.route('/announcements/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
 @admin_required
 def edit_announcement(id):
     announcement = Announcement.query.get_or_404(id)
@@ -60,14 +53,7 @@ def edit_announcement(id):
         else:
             announcement.start_date = datetime.strptime(start_date, '%Y-%m-%d')
             announcement.end_date = datetime.strptime(end_date, '%Y-%m-%d')
-            if image and image.filename:
-                if announcement.image and os.path.exists(
-                        os.path.join(current_app.config['UPLOAD_FOLDER'], announcement.image.split('/')[-1])):
-                    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], announcement.image.split('/')[-1]))
-                filename = secure_filename(image.filename)
-                image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                image.save(image_path)
-                announcement.image = f'uploads/{filename}'
+
             db.session.commit()
             flash('Announcement updated successfully!', 'success')
             return redirect(url_for('announcements.manage_announcements'))
@@ -77,7 +63,6 @@ def edit_announcement(id):
 
 
 @announcements.route('/announcements/delete/<int:id>')
-@login_required
 @admin_required
 def delete_announcement(id):
     if current_user.role != 'admin':

@@ -18,38 +18,17 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             login_user(user)
-            flash('Logged in successfully.', 'success')
-            # Chuyển hướng dựa trên role
-            if user.role == 'admin' :
-                  # Admin vào trang quản lý người dùng
-                return redirect(url_for('main.index'))
-            return redirect(url_for('auth.users')) # Viewer và editor về trang chủ
+
+
+            return redirect(url_for('auth.users'))
         flash('Invalid username or password.', 'danger')
-    return render_template('admin.login.html')
+    return render_template('admin/login.html')
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.')
+
     return redirect(url_for('main.index'))
-@auth.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        existing_user = User.query.filter_by(username=username).first()
-        if existing_user:
-            flash('Username already exists.', 'danger')
-            return redirect(url_for('auth.signup'))
-        new_user = User(username=username, role='viewer')
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Account created successfully. Please log in.', 'success')
-        return redirect(url_for('auth.login'))
-    return render_template('auth/signup.html')
 @auth.route('/users', methods=['GET', 'POST'])
 @admin_required
 def users():

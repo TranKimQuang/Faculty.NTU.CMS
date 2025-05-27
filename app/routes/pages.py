@@ -8,7 +8,6 @@ pages = Blueprint('pages', __name__)
 
 
 @pages.route('/pages', methods=['GET', 'POST'])
-@login_required
 def manage_pages():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -29,7 +28,6 @@ def manage_pages():
 
 
 @pages.route('/pages/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
 def edit_page(id):
     page = Page.query.get_or_404(id)
 
@@ -50,7 +48,6 @@ def edit_page(id):
 
 
 @pages.route('/pages/delete/<int:id>')
-@login_required
 def delete_page(id):
     page = Page.query.get_or_404(id)
     db.session.delete(page)

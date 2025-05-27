@@ -8,7 +8,6 @@ categories = Blueprint('categories', __name__)
 
 
 @categories.route('/categories', methods=['GET', 'POST'])
-@login_required
 @admin_required
 def manage_categories():
     if request.method == 'POST':
@@ -31,7 +30,6 @@ def manage_categories():
 
 
 @categories.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
 @admin_required
 def edit_category(id):
     category = Category.query.get_or_404(id)
@@ -55,7 +53,6 @@ def edit_category(id):
 
 
 @categories.route('/categories/delete/<int:id>')
-@login_required
 @admin_required
 def delete_category(id):
     if current_user.role != 'Admin':
