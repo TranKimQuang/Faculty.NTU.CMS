@@ -30,29 +30,20 @@ class Setting(db.Model):
 
     def __repr__(self):
         return f'<Setting {self.key}: {self.value}>'
-class Comment(db.Model):
+
+class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    slug = db.Column(db.String(50), unique=True, nullable=False)
 
-    user = db.relationship('User', backref='comments')
-    post = db.relationship('Post', backref='comments')
-
-    def __repr__(self):
-        return f'<Comment {self.id} by {self.user.username} on Post {self.post_id}>'
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(100), unique=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    slug = db.Column(db.String(50), unique=True, nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creator = db.relationship('User', backref='pages')
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,15 +55,9 @@ class Post(db.Model):
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creator = db.relationship('User', backref='posts')
     category = db.relationship('Category', backref='posts')
-
-class Announcement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -82,6 +67,19 @@ class Event(db.Model):
     event_date = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creator = db.relationship('User', backref='events')
+
+class Announcement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creator = db.relationship('User', backref='announcements')
+
 
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="maincontent">
     <div class="container mt-5 pt-4">
-        <h2>{% if category %}Posts in {{ category.name }}{% else %}All Posts{% endif %}</h2>
+        <h3 class="mb-3">{% if category %}Posts in {{ category.name }}{% else %}All Posts{% endif %}</h3>
         <div class="row">
             {% if posts %}
             {% for post in posts %}

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
 from app.decorators import admin_required
 from app.models import Event
@@ -18,7 +18,8 @@ def manage_events():
         description = request.form.get('description')
         event_date = request.form.get('event_date')
         location = request.form.get('location')
-        image = request.files.get('image')
+        image = request.files.get('image'),
+        created_by = current_user.id
 
         if not title or not description or not event_date or not location:
             flash('All fields are required.', 'danger')

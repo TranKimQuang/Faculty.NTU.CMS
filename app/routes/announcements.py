@@ -17,8 +17,8 @@ def manage_announcements():
         title = request.form.get('title')
         content = request.form.get('content')
         start_date = request.form.get('start_date')
-        end_date = request.form.get('end_date')
-        image = request.files.get('image')
+        end_date = request.form.get('end_date'),
+        created_by = current_user.id
 
         if not title or not content or not start_date or not end_date:
             flash('All fields are required.', 'danger')

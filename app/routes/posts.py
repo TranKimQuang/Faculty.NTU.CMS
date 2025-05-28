@@ -52,7 +52,8 @@ def manage_posts():
                     content=content,
                     category_id=category_id,
                     is_published=is_published,
-                    created_at=datetime.now()
+                    created_at=datetime.now(),
+                    created_by = current_user.id
                 )
                 if image and image.filename:
                     if not os.path.exists(current_app.config['UPLOAD_FOLDER']):

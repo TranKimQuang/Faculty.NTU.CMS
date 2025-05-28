@@ -150,8 +150,8 @@ body {
 
 /* Cần sửa lại cái này cho đúng selector */
 .container.my-5.pt-4 { /* Đã sửa selector: .container.my-5.pt-4 */
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+    margin-top: 0
+    padding-top: 0
 }
 
 h3.mb-3 {

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
 from app.models import Page
 from datetime import datetime
@@ -12,7 +12,8 @@ def manage_pages():
     if request.method == 'POST':
         title = request.form.get('title')
         slug = request.form.get('slug')
-        content = request.form.get('content')
+        content = request.form.get('content'),
+        created_by = current_user.id
 
         if not title or not slug or not content:
             flash('All fields are required.', 'danger')
