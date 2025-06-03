@@ -10,7 +10,7 @@ import uuid
 
 posts = Blueprint('posts', __name__)
 
-@posts.route('/admin/posts', methods=['GET', 'POST'])
+@posts.route('/posts', methods=['GET', 'POST'])
 @admin_required
 def manage_posts():
     editing_post = None

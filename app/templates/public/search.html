@@ -1,9 +1,10 @@
 {% extends "public/base.html" %}
 
-{% block title %}Search Results - University CMS{% endblock %}
+{% block title %}Kết quả tìm kiếm - CMS Đại học Nha Trang{% endblock %}
 
 {% block content %}
-    <h2 class="text-center mb-4">Search Results for "{{ query }}"</h2>
+<div class="maincontent">
+    <h2 class="text-center mb-4">Kết quả tìm kiếm cho "{{ query }}"</h2>
     <section class="mb-5">
         {% if results %}
         <div class="row">
@@ -15,9 +16,9 @@
                             {% if result.type == 'page' %}
                             <a href="{{ url_for('main.page', slug=result.item.slug) }}">{{ result.item.title }}</a>
                             {% elif result.type == 'post' %}
-                            <a href="{{ url_for('main.posts', slug=result.item.slug) }}">{{ result.item.title }}</a>
+                            <a href="{{ url_for('main.post_detail', slug=result.item.slug) }}">{{ result.item.title }}</a>
                             {% elif result.type == 'event' %}
-                            {{ result.item.title }}
+                            <a href="{{ url_for('main.events') }}">{{ result.item.title }}</a> <!-- Cần route chi tiết nếu có -->
                             {% endif %}
                         </h5>
                         <p class="card-text">
@@ -32,11 +33,11 @@
                         <p class="card-text">
                             <small class="text-muted">
                                 {% if result.type == 'page' %}
-                                Created: {{ result.item.created_at.strftime('%Y-%m-%d') }}
+                                Tạo ngày: {{ result.item.created_at.strftime('%d/%m/%Y') }}
                                 {% elif result.type == 'post' %}
-                                Published: {{ result.item.created_at.strftime('%Y-%m-%d') }}
+                                Đăng ngày: {{ result.item.created_at.strftime('%d/%m/%Y') }}
                                 {% elif result.type == 'event' %}
-                                {{ result.item.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ result.item.location }}
+                                {{ result.item.event_date.strftime('%d/%m/%Y %H:%M') }} | {{ result.item.location }}
                                 {% endif %}
                             </small>
                         </p>
@@ -46,7 +47,8 @@
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-muted">No results found for "{{ query }}".</p>
+        <p class="text-muted">Không tìm thấy kết quả cho "{{ query }}".</p>
         {% endif %}
     </section>
+</div>
 {% endblock %}

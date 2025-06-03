@@ -1,6 +1,11 @@
 /* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
 body {
-    background: linear-gradient(to bottom, #007bff, #ffffff);
+    /* Mặc định nếu không có giá trị từ Jinja2 */
+    --gradient-start: #007bff; /* Xanh dương */
+    --gradient-end: #ffffff;  /* Trắng */
+
+    /* Áp dụng gradient với các biến */
+    background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
     min-height: 100vh;
     font-family: 'Roboto', sans-serif;
 }
@@ -33,11 +38,12 @@ body {
 }
 
 .card-img-top {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    max-height: 200px;
-    object-fit: cover;
+    max-height: none;
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* hoặc bỏ luôn object-fit */
 }
+
 
 .list-group-item {
     border-radius: 8px;

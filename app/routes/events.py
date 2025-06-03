@@ -18,7 +18,7 @@ def manage_events():
         description = request.form.get('description')
         event_date = request.form.get('event_date')
         location = request.form.get('location')
-        image = request.files.get('image'),
+        image = request.files.get('image')
         created_by = current_user.id
 
         if not title or not description or not event_date or not location:
