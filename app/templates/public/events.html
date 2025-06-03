@@ -1,11 +1,11 @@
 {% extends "public/base.html" %}
 
-{% block title %}Events - University CMS{% endblock %}
+{% block title %}Sự kiện - University CMS{% endblock %}
 
 {% block content %}
 <div class="maincontent">
     <div class="container my-5 pt-5">
-    <h3 class="mb-3">Upcoming Events</h3>
+    <h3 class="mb-3">Sự kiện sắp tới</h3>
     <section class="mb-5">
         <div class="row">
             {% for event in events %}
@@ -19,7 +19,7 @@
                         <p class="card-text">{{ event.description | safe | truncate(200) }}</p>
                         <p class="card-text">
                             <small class="text-muted">
-                                {{ event.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ event.location }}
+                                {{ event.event_date.strftime('%d/%m/%Y %H:%M') }} | {{ event.location }}
                             </small>
                         </p>
                     </div>
@@ -27,11 +27,11 @@
             </div>
             {% else %}
             <div class="col-12">
-                <p class="text-muted">No upcoming events.</p>
+                <p class="text-muted">Không có sự kiện sắp tới.</p>
             </div>
             {% endfor %}
         </div>
     </section>
-        </div>
     </div>
+</div>
 {% endblock %}

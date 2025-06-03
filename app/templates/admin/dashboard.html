@@ -1,34 +1,43 @@
 {% extends "admin/base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
+
 {% block content %}
-    <h2 class="text-center mb-4">Admin Dashboard</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Pages</h5>
-                    <p class="card-text">Create, edit, or delete pages.</p>
-                    <a href="{{ url_for('pages.manage_pages') }}" class="btn btn-primary">Go to Pages</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Posts</h5>
-                    <p class="card-text">Create, edit, or delete posts.</p>
-                    <a href="{{ url_for('posts.manage_posts') }}" class="btn btn-primary">Go to Posts</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Events</h5>
-                    <p class="card-text">Create, edit, or delete events.</p>
-                    <a href="{{ url_for('events.manage_events') }}" class="btn btn-primary">Go to Events</a>
-                </div>
+<h2 class="text-center mb-4">Admin Dashboard</h2>
+
+<!-- THỐNG KÊ -->
+<div class="row text-center mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Pages</h5>
+                <p class="card-text fs-3 text-white">{{ page_count }}</p>
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Posts</h5>
+                <p class="card-text fs-3 text-white">{{ post_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h5 class="card-title">Events</h5>
+                <p class="card-text fs-3 text-white">{{ event_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h5 class="card-title">Announcements</h5>
+                <p class="card-text fs-3 text-white">{{ announcements_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

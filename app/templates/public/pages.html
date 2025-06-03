@@ -1,9 +1,9 @@
 {% extends "public/base.html" %}
-{% block title %}All Pages - Nha Trang University CMS{% endblock %}
+{% block title %}Tất cả trang - CMS Đại học Nha Trang{% endblock %}
 {% block content %}
 <div class="maincontent">
     <div class="container mt-5 pt-4">
-        <h3 class="mb-3">All Pages</h3>
+        <h3 class="mb-3">Tất cả trang</h3>
         <div class="row">
             {% if pages %}
             {% for page in pages %}
@@ -12,11 +12,11 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ page.title }}</h5>
                         <p class="card-text">{{ page.content | safe | truncate(200) }}</p>
-                        <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">Read More</a>
+                        <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">Xem thêm</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">
-                            Created: {{ page.created_at.strftime('%Y-%m-%d') }}
+                            Tạo ngày: {{ page.created_at.strftime('%d/%m/%Y') }}
                         </small>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
             {% endfor %}
             {% else %}
             <div class="col-12">
-                <p class="text-muted">No pages available.</p>
+                <p class="text-muted">Không có trang nào.</p>
             </div>
             {% endif %}
         </div>

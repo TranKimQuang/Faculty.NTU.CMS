@@ -1,11 +1,11 @@
 {% extends "public/base.html" %}
-{% block title %}Home - Faculty NTU CMS{% endblock %}
+{% block title %}Trang chủ - CMS Khoa ĐH Nha Trang{% endblock %}
 {% block content %}
 <div class="maincontent">
 
     <div class="welcome-message">
         <h1>
-            {% if settings_map.site_welcome %}{{ settings_map.site_welcome }}{% else %}Chào mừng đến với web Nha Trang University CMS{% endif %}
+            {% if settings_map.site_welcome %}{{ settings_map.site_welcome }}{% else %}Chào mừng đến với CMS Khoa Đại học Nha Trang{% endif %}
         </h1>
     </div>
 
@@ -14,7 +14,7 @@
             <div class="col-md-8">
                 <div class="left-panel">
                     <section class="mb-5">
-                        <h3 class="mb-3">Latest Posts</h3>
+                        <h3 class="mb-3">Bài viết mới nhất</h3>
                         <div class="row">
                             {% for post in posts %}
                             <div class="col-md-6 mb-4">
@@ -25,24 +25,24 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{ post.title }}</h5>
                                         <p class="card-text">{{ post.content | safe | truncate(200) }}</p>
-                                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="btn btn-primary btn-sm">Read More</a>
+                                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="btn btn-primary btn-sm">Xem thêm</a>
                                     </div>
                                     <div class="card-footer">
                                         <small class="text-muted">
-                                            Category: {{ post.category.name }} | Published: {{ post.created_at.strftime('%Y-%m-%d') }}
+                                            Danh mục: {{ post.category.name }} | Đăng ngày: {{ post.created_at.strftime('%d/%m/%Y') }}
                                         </small>
                                     </div>
                                 </div>
                             </div>
                             {% else %}
                             <div class="col-12">
-                                <p class="text-muted">No posts available.</p>
+                                <p class="text-muted">Không có bài viết nào.</p>
                             </div>
                             {% endfor %}
                         </div>
                     </section>
                     <section class="mb-5">
-                        <h3 class="mb-3">Pages</h3>
+                        <h3 class="mb-3">Các trang</h3>
                         <div class="row">
                             {% for page in pages %}
                             <div class="col-md-6 mb-4">
@@ -50,16 +50,16 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{ page.title }}</h5>
                                         <p class="card-text">{{ page.content | safe | truncate(200) }}</p>
-                                        <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">View Page</a>
+                                        <a href="{{ url_for('main.page', slug=page.slug) }}" class="btn btn-primary btn-sm">Xem trang</a>
                                     </div>
                                     <div class="card-footer">
-                                        <small class="text-muted">Created: {{ page.created_at.strftime('%Y-%m-%d') }}</small>
+                                        <small class="text-muted">Tạo ngày: {{ page.created_at.strftime('%d/%m/%Y') }}</small>
                                     </div>
                                 </div>
                             </div>
                             {% else %}
                             <div class="col-12">
-                                <p class="text-muted">No pages available.</p>
+                                <p class="text-muted">Không có trang nào.</p>
                             </div>
                             {% endfor %}
                         </div>
@@ -69,35 +69,35 @@
 
             <div class="col-md-4">
                 <section class="mb-5">
-                    <h3 class="mb-3">Announcements</h3>
-                    <div class="row"> {# Thêm row để chứa các card #}
+                    <h3 class="mb-3">Thông báo</h3>
+                    <div class="row">
                         {% for announcement in announcements %}
-                        <div class="col-md-12 mb-4"> {# Mỗi announcement là một cột 12 (full width) #}
+                        <div class="col-md-12 mb-4">
                             <div class="card h-100 hover-effect">
-                                {% if announcement.image %} {# Thêm ảnh nếu có #}
+                                {% if announcement.image %}
                                 <img src="{{ url_for('static', filename=announcement.image) }}" class="card-img-top" alt="{{ announcement.title }}">
                                 {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title">{{ announcement.title }}</h5>
-                                    <p class="card-text">{{ announcement.content | safe | truncate(150) }}</p> {# Dùng safe để hiển thị HTML nếu có #}
+                                    <p class="card-text">{{ announcement.content | safe | truncate(150) }}</p>
                                 </div>
-                                <div class="card-footer"> {# Thêm card-footer #}
+                                <div class="card-footer">
                                     <small class="text-muted">
-                                        From: {{ announcement.start_date.strftime('%Y-%m-%d') }} <br>
-                                        To: {{ announcement.end_date.strftime('%Y-%m-%d') }}
+                                        Từ: {{ announcement.start_date.strftime('%d/%m/%Y') }} <br>
+                                        Đến: {{ announcement.end_date.strftime('%d/%m/%Y') }}
                                     </small>
                                 </div>
                             </div>
                         </div>
                         {% else %}
                         <div class="col-12">
-                            <p class="text-muted">No announcements available.</p>
+                            <p class="text-muted">Không có thông báo nào.</p>
                         </div>
                         {% endfor %}
                     </div>
                 </section>
                 <section class="mb-5">
-                    <h3 class="mb-3">Upcoming Events</h3>
+                    <h3 class="mb-3">Sự kiện sắp tới</h3>
                     <div class="row">
                         {% for event in events %}
                         <div class="col-md-12 mb-4">
@@ -110,7 +110,7 @@
                                     <p class="card-text">{{ event.description | safe | truncate(200) }}</p>
                                     <p class="card-text">
                                         <small class="text-muted">
-                                            {{ event.event_date.strftime('%Y-%m-%d %H:%M') }} | {{ event.location }}
+                                            {{ event.event_date.strftime('%d/%m/%Y %H:%M') }} | {{ event.location }}
                                         </small>
                                     </p>
                                 </div>
@@ -118,7 +118,7 @@
                         </div>
                         {% else %}
                         <div class="col-12">
-                            <p class="text-muted">No upcoming events.</p>
+                            <p class="text-muted">Không có sự kiện sắp tới.</p>
                         </div>
                         {% endfor %}
                     </div>

@@ -1,46 +1,44 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Manage Announcements - University CMS{% endblock %}
+{% block title %}Quản lý Thông báo - CMS Đại học{% endblock %}
 
 {% block content %}
-    <h2 class="text-center mb-4">Manage Announcements</h2>
+    <h3 class="mt-5 mb-3">Quản lý Thông báo </h3>
 
     {% if current_user.has_permission('create') %}
-    <!-- Form to create/edit announcement -->
     <form method="POST" enctype="multipart/form-data" action="{% if editing_announcement %}{{ url_for('announcements.edit_announcement', id=editing_announcement.id) }}{% else %}{{ url_for('announcements.manage_announcements') }}{% endif %}">
         <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">Tiêu đề</label>
             <input type="text" class="form-control" id="title" name="title" value="{% if editing_announcement %}{{ editing_announcement.title }}{% endif %}" required>
         </div>
         <div class="mb-3">
-            <label for="content" class="form-label">Content</label>
+            <label for="content" class="form-label">Nội dung</label>
             <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_announcement %}{{ editing_announcement.content }}{% endif %}</textarea>
         </div>
         <div class="mb-3">
-            <label for="start_date" class="form-label">Start Date</label>
+            <label for="start_date" class="form-label">Ngày bắt đầu</label>
             <input type="date" class="form-control" id="start_date" name="start_date" value="{% if editing_announcement %}{{ editing_announcement.start_date.strftime('%Y-%m-%d') }}{% endif %}" required>
         </div>
         <div class="mb-3">
-            <label for="end_date" class="form-label">End Date</label>
+            <label for="end_date" class="form-label">Ngày kết thúc</label>
             <input type="date" class="form-control" id="end_date" name="end_date" value="{% if editing_announcement %}{{ editing_announcement.end_date.strftime('%Y-%m-%d') }}{% endif %}" required>
         </div>
-        <button type="submit" class="btn btn-primary">{% if editing_announcement %}Update Announcement{% else %}Create Announcement{% endif %}</button>
+        <button type="submit" class="btn btn-primary">{% if editing_announcement %}Cập nhật Thông báo{% else %}Tạo Thông báo{% endif %}</button>
         {% if editing_announcement %}
-        <a href="{{ url_for('announcements.manage_announcements') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ url_for('announcements.manage_announcements') }}" class="btn btn-secondary">Hủy</a>
         {% endif %}
     </form>
     {% endif %}
 
-    <!-- List of existing announcements -->
-    <h3 class="mt-5 mb-3">Existing Announcements</h3>
+    <h3 class="mt-5 mb-3">Thông báo hiện có</h3>
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th>Tiêu đề</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
                 {% if current_user.has_permission('edit') %}
-                <th>Actions</th>
+                <th>Hành động</th>
                 {% endif %}
             </tr>
         </thead>
@@ -52,16 +50,16 @@
                 <td>{{ announcement.end_date.strftime('%Y-%m-%d') }}</td>
                 {% if current_user.has_permission('edit') %}
                 <td>
-                    <a href="{{ url_for('announcements.edit_announcement', id=announcement.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url_for('announcements.edit_announcement', id=announcement.id) }}" class="btn btn-sm btn-warning">Sửa</a>
                     {% if current_user.has_permission('delete') %}
-                    <a href="{{ url_for('announcements.delete_announcement', id=announcement.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this announcement?')">Delete</a>
+                    <a href="{{ url_for('announcements.delete_announcement', id=announcement.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa thông báo này không?')">Xóa</a>
                     {% endif %}
                 </td>
                 {% endif %}
             </tr>
             {% else %}
             <tr>
-                <td colspan="{% if current_user.has_permission('edit') %}4{% else %}3{% endif %}" class="text-muted">No announcements available.</td>
+                <td colspan="{% if current_user.has_permission('edit') %}4{% else %}3{% endif %}" class="text-muted">Không có thông báo nào.</td>
             </tr>
             {% endfor %}
         </tbody>
