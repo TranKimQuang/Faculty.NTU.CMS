@@ -3,7 +3,7 @@
 {% block content %}
 <div class="maincontent">
     <div class="container mt-5 pt-4">
-        <h3 class="mb-3">{% if category %}Posts in {{ category.name }}{% else %}All Posts{% endif %}</h3>
+        <h3 class="mb-3">{% if category %}Bài viết trong danh mục {{ category.name }}{% else %}Toàn bộ bài viết {% endif %}</h3>
         <div class="row">
             {% if posts %}
             {% for post in posts %}
@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ post.title }}</h5>
                         <p class="card-text">{{ post.content | safe | truncate(200) }}</p>
-                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="btn btn-primary btn-sm">Read More</a>
+                        <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="btn btn-primary btn-sm">Xem thêm</a>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">

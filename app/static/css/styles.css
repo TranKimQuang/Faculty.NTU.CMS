@@ -1,55 +1,49 @@
-/* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
+/*
+ * Tệp CSS chính cho Hệ thống Quản lý Nội dung (CMS) Khoa Công nghệ Thông tin
+ * Tên dự án: Faculty.NTU.CMS
+ * Tác giả: Trần Kim Quang
+ * Ngày: 05/06/2025
+ */
+
+/* ==================== 1. Cài đặt chung (Global Styles) ==================== */
 body {
+    /* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
     /* Mặc định nếu không có giá trị từ Jinja2 */
     --gradient-start: #007bff; /* Xanh dương */
     --gradient-end: #ffffff;  /* Trắng */
 
     /* Áp dụng gradient với các biến */
     background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
-    min-height: 100vh;
-    font-family: 'Roboto', sans-serif;
+    min-height: 100vh; /* Đảm bảo body chiếm toàn bộ chiều cao màn hình */
+    font-family: 'Roboto', sans-serif; /* Font chữ chính */
+    margin: 0; /* Đảm bảo không có margin mặc định từ body */
+    padding: 0; /* Đảm bảo không có padding mặc định từ body */
 }
 
+/* ==================== 2. Khu vực chính (Main Layout) ==================== */
 .maincontent {
-
-
     border-radius: 10px;
-    min-height: 100vh;
-    background: transparent; /* Loại bỏ nền cũ của maincontent */
+    min-height: 100vh; /* Đảm bảo maincontent chiếm toàn bộ chiều cao của viewport */
+    background: transparent; /* Loại bỏ nền cũ của maincontent, để thấy gradient của body */
+    /*
+     * Lưu ý: Nếu bạn muốn maincontent có nền màu trắng nhưng vẫn có border-radius,
+     * hãy thay đổi `background: transparent;` thành `background-color: white;`
+     * hoặc `background-color: rgba(255, 255, 255, 0.9);`
+     */
 }
 
-/* Khung bao quanh phần bên trái */
-.left-panel {
-    background: rgba(245, 245, 245, 0.9); /* Màu trắng bạc nhẹ */
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(200, 200, 200, 0.5); /* Viền nhẹ */
+/* Container chính của nội dung (ví dụ: chứa welcome message, bài viết, v.v.) */
+/* Dựa vào ảnh mới nhất, selector này là `.container.mt-5.pt-4` */
+.container.mt-5.pt-4 {
+    margin: 0 !important;       /* Ghi đè margin mặc định của Bootstrap hoặc các class mt-5 */
+    padding-top: 0;    /* Ghi đè padding-top mặc định của Bootstrap hoặc các class pt-4 */
+    /*
+     * Kiểm tra lại trong HTML xem class là `my-5` hay `mt-5` để sử dụng selector đúng.
+     * Nếu HTML là `my-5`, hãy sửa selector thành `.container.my-5.pt-4`
+     */
 }
 
-.card, .list-group-item {
-    transition: transform 0.2s, box-shadow 0.2s;
-    background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để dễ đọc */
-}
-
-.hover-effect:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-}
-
-.card-img-top {
-    max-height: none;
-    width: 100%;
-    height: auto;
-    object-fit: contain; /* hoặc bỏ luôn object-fit */
-}
-
-
-.list-group-item {
-    border-radius: 8px;
-}
-
-/* Navbar Styles */
+/* ==================== 3. Thanh điều hướng (Navbar Styles) ==================== */
 .navbar {
     background: linear-gradient(to right, #333333, #555555); /* Gradient đen bạc */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -59,7 +53,6 @@ body {
     font-weight: 700;
     font-size: 1.5rem;
     color: #ffffff;
-
 }
 
 .nav-link {
@@ -70,17 +63,18 @@ body {
 }
 
 .nav-link:hover {
-    color: #000000 !important;
-    background-color: rgba(255, 255, 255, 0.2);
+    color: #000000 !important; /* Màu chữ đen khi hover, dùng !important để ghi đè */
+    background-color: rgba(255, 255, 255, 0.2); /* Nền mờ trắng khi hover */
     border-radius: 5px;
 }
 
+/* Dropdown Menu */
 .dropdown-menu {
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    margin-top: 0;
-    background: rgba(255, 255, 255, 0.9);
+    margin-top: 0; /* Đảm bảo menu dính liền với navbar */
+    background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ cho dropdown */
 }
 
 .dropdown-item {
@@ -94,7 +88,7 @@ body {
     color: #007bff;
 }
 
-/* Search Form */
+/* Form tìm kiếm trên Navbar */
 .navbar form input {
     border-radius: 20px;
     border: 1px solid #ced4da;
@@ -118,19 +112,28 @@ body {
     color: #000000;
 }
 
-/* Thêm CSS cho thông báo chào mừng */
+/* ==================== 4. Panel bên trái (Left Panel) ==================== */
+.left-panel {
+    background: rgba(245, 245, 245, 0.9); /* Màu trắng bạc nhẹ */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(200, 200, 200, 0.5); /* Viền nhẹ */
+}
+
+/* ==================== 5. Thông báo chào mừng (Welcome Message) ==================== */
 .welcome-message {
     text-align: center; /* Căn giữa văn bản */
     padding: 20px 0; /* Thêm padding trên dưới */
-    margin-bottom: 30px; /* Khoảng cách dưới thông báo */
-    color: #0056b3; /* Màu chữ mặc định */
+    margin-bottom: 10px; /* Khoảng cách dưới thông báo */
+    color: #0056b3; /* Màu chữ mặc định (sẽ bị ghi đè bởi gradient) */
     font-size: 2.5rem; /* Kích thước chữ lớn */
     font-weight: bold; /* Chữ đậm */
     text-transform: uppercase; /* Chữ in hoa */
     background: linear-gradient(to right, #007bff, #00c6ff, #007bff); /* Gradient màu chữ */
-    -webkit-background-clip: text; /* Cắt nền theo chữ */
-    background-clip: text;
-    -webkit-text-fill-color: transparent; /* Làm chữ trong suốt để thấy nền */
+    -webkit-background-clip: text; /* Cắt nền theo chữ (cho trình duyệt Webkit) */
+    background-clip: text; /* Cắt nền theo chữ */
+    -webkit-text-fill-color: transparent; /* Làm chữ trong suốt để thấy nền (cho trình duyệt Webkit) */
     animation: pulse 2s infinite alternate; /* Áp dụng hiệu ứng nhấp nháy */
 }
 
@@ -153,30 +156,34 @@ body {
     }
 }
 
-
-/* Cần sửa lại cái này cho đúng selector */
-.container.my-5.pt-4 { /* Đã sửa selector: .container.my-5.pt-4 */
-    margin-top: 0
-    padding-top: 0
-}
-
-h3.mb-3 {
-    font-weight: 600;
-    color: #343a40;
-    border-left: 4px solid #007bff;
-    padding-left: 1rem;
-}
-
-/* Card Styles */
-.card {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* ==================== 6. Thẻ (Card) và Danh sách nhóm (List Group) ==================== */
+.card, .list-group-item {
+    transition: transform 0.2s, box-shadow 0.2s; /* Hiệu ứng chuyển động mượt mà */
+    background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để dễ đọc */
+    border: none; /* Loại bỏ viền mặc định của card */
+    border-radius: 10px; /* Bo góc card */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
 }
 
 .card:hover {
+    transform: translateY(-5px); /* Di chuyển lên trên khi hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn khi hover */
+}
+
+.hover-effect:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important; /* Dùng !important nếu cần ghi đè */
+}
+
+.card-img-top {
+    max-height: none; /* Bỏ giới hạn chiều cao max-height nếu có */
+    width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng */
+    height: auto; /* Chiều cao tự động để giữ tỉ lệ */
+    object-fit: contain; /* Đảm bảo toàn bộ hình ảnh hiển thị trong khung */
+}
+
+.list-group-item {
+    border-radius: 8px; /* Bo góc cho item trong list group */
 }
 
 .card-title {
@@ -191,12 +198,22 @@ h3.mb-3 {
 }
 
 .card-footer {
-    background: transparent;
-    border-top: none;
+    background: transparent; /* Nền trong suốt cho footer của card */
+    border-top: none; /* Loại bỏ viền trên của footer */
     font-size: 0.85rem;
     color: #6c757d;
 }
 
+/* ==================== 7. Các thành phần khác ==================== */
+/* Tiêu đề cấp 3 */
+h3.mb-3 {
+    font-weight: 600;
+    color: #343a40;
+    border-left: 4px solid #007bff; /* Đường viền xanh bên trái */
+    padding-left: 1rem; /* Khoảng cách với đường viền */
+}
+
+/* Nút chính (ví dụ: Xem thêm) */
 .btn-primary {
     border-radius: 20px;
     padding: 0.4rem 1.2rem;
@@ -205,44 +222,45 @@ h3.mb-3 {
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    transform: scale(1.05); /* Phóng to nhẹ khi hover */
 }
 
-/* Responsive Adjustments */
+/* ==================== 8. Điều chỉnh cho màn hình nhỏ (Responsive Adjustments) ==================== */
 @media (max-width: 768px) {
     .navbar-nav {
-        padding: 1rem 0;
+        padding: 1rem 0; /* Thêm padding cho nav items trên màn hình nhỏ */
     }
     .nav-link {
         padding: 0.5rem 1.5rem;
     }
     .card {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.5rem; /* Khoảng cách dưới card trên màn hình nhỏ */
     }
     h3.mb-3 {
-        font-size: 1.5rem;
+        font-size: 1.5rem; /* Kích thước tiêu đề nhỏ hơn */
     }
+    /* Điều chỉnh padding-top cho container chính trên màn hình nhỏ */
     .container.mt-5.pt-4 {
         padding-top: 2rem;
     }
     .left-panel {
-        padding: 15px;
+        padding: 15px; /* Giảm padding cho panel bên trái */
     }
 }
 
 @media (max-width: 576px) {
     .navbar form {
-        width: 100%;
+        width: 100%; /* Form tìm kiếm chiếm toàn bộ chiều rộng */
         margin-top: 1rem;
     }
     .navbar form input {
-        width: 70%;
+        width: 70%; /* Input chiếm 70% chiều rộng của form */
     }
     .navbar form button {
-        width: 30%;
+        width: 30%; /* Button chiếm 30% chiều rộng của form */
     }
     .card-img-top {
-        max-height: 150px;
+        max-height: 150px; /* Giới hạn chiều cao hình ảnh card trên màn hình rất nhỏ */
     }
 }
