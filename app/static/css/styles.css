@@ -45,7 +45,7 @@ body {
 
 /* ==================== 3. Thanh điều hướng (Navbar Styles) ==================== */
 .navbar {
-    background: linear-gradient(to right, #333333, #555555); /* Gradient đen bạc */
+    background: linear-gradient(to right, blue, cyan); /* Gradient đen bạc */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

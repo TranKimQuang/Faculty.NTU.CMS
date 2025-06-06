@@ -5,7 +5,6 @@ from app.models import Menu
 
 menus = Blueprint('menus', __name__)
 
-
 @menus.route('/menus', methods=['GET', 'POST'])
 @login_required
 def manage_menus():
@@ -18,7 +17,10 @@ def manage_menus():
         if not name or not url or not order:
             flash('All fields are required.', 'danger')
         else:
-            menu = Menu(name=name, url=url, order=int(order), parent_id=parent_id if parent_id else None)
+            # Chuyển đổi parent_id thành None nếu rỗng, hoặc số nguyên nếu là số
+            parent_id = int(parent_id) if parent_id and parent_id.isdigit() else None
+            print(f"Saving menu with parent_id: {parent_id}")  # Debug
+            menu = Menu(name=name, url=url, order=int(order), parent_id=parent_id)
             db.session.add(menu)
             db.session.commit()
             flash('Menu created successfully!', 'success')
@@ -26,8 +28,6 @@ def manage_menus():
 
     menus = Menu.query.order_by(Menu.order).all()
     return render_template('admin/menus.html', menus=menus)
-
-
 @menus.route('/menus/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_menu(id):
@@ -47,13 +47,12 @@ def edit_menu(id):
             return redirect(url_for('menus.manage_menus'))
 
     menus = Menu.query.order_by(Menu.order).all()
-    return render_template('admin/menus.html', menus=menus, editing_menu=menu)
-
+    return render_template('admin/menus.html', menus=menus, editing_menu=menu, Menu=Menu)
 
 @menus.route('/menus/delete/<int:id>')
 @login_required
 def delete_menu(id):
-    if current_user.role != 'Admin':
+    if current_user.role != 'admin':
         flash('You do not have permission to delete menus.', 'danger')
         return redirect(url_for('menus.manage_menus'))
 

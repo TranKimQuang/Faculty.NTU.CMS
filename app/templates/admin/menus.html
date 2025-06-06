@@ -24,7 +24,7 @@
             <select class="form-control" id="parent_id" name="parent_id">
                 <option value="">Không có</option>
                 {% for menu in menus %}
-                {% if editing_menu and editing_menu.id != menu.id %}
+                {% if not editing_menu or (editing_menu and editing_menu.id != menu.id) %}
                 <option value="{{ menu.id }}" {% if editing_menu and editing_menu.parent_id == menu.id %}selected{% endif %}>{{ menu.name }}</option>
                 {% endif %}
                 {% endfor %}
@@ -56,7 +56,18 @@
                 <td>{{ menu.name }}</td>
                 <td>{{ menu.url }}</td>
                 <td>{{ menu.order }}</td>
-                <td>{{ menu.parent.name if menu.parent else 'Không có' }}</td>
+                <td>
+                    {% if menu.parent_id %}
+                        {% for m in menus %}
+                            {% if m.id == menu.parent_id %}
+                                {{ m.name }}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not loop.last %}Không xác định{% endif %}
+                    {% else %}
+                        Không có
+                    {% endif %}
+                </td>
                 {% if current_user.has_permission('edit') %}
                 <td>
                     <a href="{{ url_for('menus.edit_menu', id=menu.id) }}" class="btn btn-sm btn-warning">Sửa</a>
