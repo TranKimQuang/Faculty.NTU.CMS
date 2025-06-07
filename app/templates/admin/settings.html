@@ -8,7 +8,7 @@
         <div class="card mb-4 shadow-sm hover-effect">
             <div class="card-body">
                 <h5 class="card-title">{% if editing_setting %}Chỉnh sửa Cài đặt{% else %}Thêm Cài đặt Mới{% endif %}</h5>
-                <form method="POST" action="{% if editing_setting %}{{ url_for('main.edit_setting', key=editing_setting.key) }}{% else %}{{ url_for('main.settings') }}{% endif %}">
+                <form method="POST" action="{% if editing_setting %}{{ url_for('settings_bp.edit_setting', key=editing_setting.key) }}{% else %}{{ url_for('settings_bp.settings') }}{% endif %}">
                     <div class="mb-3">
                         <label for="key" class="form-label">Khóa</label>
                         {# Nếu đang chỉnh sửa, trường khóa sẽ chỉ đọc (read-only) để tránh thay đổi key chính gây lỗi #}
@@ -21,7 +21,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">{% if editing_setting %}Cập nhật Cài đặt{% else %}Tạo Cài đặt{% endif %}</button>
                     {% if editing_setting %}
-                    <a href="{{ url_for('main.settings') }}" class="btn btn-secondary">Hủy</a>
+                    <a href="{{ url_for('settings_bp.settings') }}" class="btn btn-secondary">Hủy</a>
                     {% endif %}
                 </form>
             </div>
@@ -42,9 +42,9 @@
                     <td>{{ setting.key }}</td>
                     <td>{{ setting.value }}</td>
                     <td>
-                        <a href="{{ url_for('main.edit_setting', key=setting.key) }}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="{{ url_for('settings_bp.edit_setting', key=setting.key) }}" class="btn btn-sm btn-warning">Sửa</a>
                         {% if current_user.has_permission('delete') %} {# Đảm bảo chỉ admin mới thấy nút xóa #}
-                        <a href="{{ url_for('main.delete_setting', key=setting.key) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cài đặt này không?');">Xóa</a>
+                        <a href="{{ url_for('settings_bp.delete_setting', key=setting.key) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cài đặt này không?');">Xóa</a>
                         {% endif %}
                     </td>
                 </tr>

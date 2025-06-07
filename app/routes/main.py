@@ -5,7 +5,8 @@ from flask_login import login_required, current_user
 from app import db
 from app.decorators import admin_required, editor_required
 from app.models import Page, Category, Post, Announcement, Event, Menu, Setting
-from collections import defaultdict  # Phần xử lý menu động
+from collections import defaultdict
+from app.routes.settings import settings
 
 main = Blueprint('main', __name__)
 
@@ -76,61 +77,6 @@ def page(slug):
     common_data = get_common_data()
     return render_template('public/page_detail.html', page=page, **common_data)
 
-# Phần route cho quản lý cài đặt (tạo mới)
-@main.route('/settings', methods=['GET', 'POST'])
-@admin_required
-def settings():
-    editing_setting = None
-    if request.method == 'POST':
-        key = request.form.get('key')
-        value = request.form.get('value')
-        if not key or not value:
-            flash('Key and Value are required.', 'danger')
-        else:
-            setting = Setting.query.filter_by(key=key).first()
-            if setting:
-                flash(f'Setting with key "{key}" already exists. Use edit to change it.', 'warning')
-            else:
-                setting = Setting(key=key, value=value)
-                db.session.add(setting)
-                db.session.commit()
-                flash('Setting created successfully.', 'success')
-            return redirect(url_for('main.settings'))
-    settings = Setting.query.all()
-    return render_template('admin/settings.html', settings=settings, editing_setting=editing_setting)
-
-# Phần route cho chỉnh sửa cài đặt
-@main.route('/settings/edit/<string:key>', methods=['GET', 'POST'])
-@login_required
-def edit_setting(key):
-    setting = Setting.query.filter_by(key=key).first_or_404()
-    if request.method == 'POST':
-        new_key = request.form.get('key')
-        new_value = request.form.get('value')
-        if not new_key or not new_value:
-            flash('Key and Value are required.', 'danger')
-        else:
-            if new_key != key and Setting.query.filter_by(key=new_key).first():
-                flash(f'Cannot change key to "{new_key}" as it already exists.', 'danger')
-            else:
-                setting.key = new_key
-                setting.value = new_value
-                db.session.commit()
-                flash('Setting updated successfully.', 'success')
-                return redirect(url_for('main.settings'))
-    settings = Setting.query.all()
-    return render_template('admin/settings.html', settings=settings, editing_setting=setting)
-
-# Phần route cho xóa cài đặt
-@main.route('/settings/delete/<string:key>')
-@admin_required
-def delete_setting(key):
-    setting = Setting.query.filter_by(key=key).first_or_404()
-    db.session.delete(setting)
-    db.session.commit()
-    flash(f'Setting "{key}" deleted successfully.', 'success')
-    return redirect(url_for('main.settings'))
-
 # Phần route cho danh sách bài viết theo danh mục
 @main.route('/posts/<slug>')
 def posts(slug):
@@ -153,9 +99,10 @@ def post_detail(slug):
     common_data = get_common_data()
     other_posts = Post.query.filter(
         Post.id != post.id,
-        Post.is_published==True
+        Post.is_published == True
     ).order_by(Post.created_at.desc()).limit(2).all()
-    return render_template('public/post_detail.html', post=post, **common_data, other_posts=other_posts) # <-- Đảm bảo other_posts được truyền vào template
+    return render_template('public/post_detail.html', post=post, **common_data, other_posts=other_posts)
+
 # Phần route cho danh sách sự kiện
 @main.route('/events')
 def events():
@@ -169,7 +116,7 @@ def search():
     results = []
     if query:
         pages = Page.query.filter(Page.title.contains(query) | Page.content.contains(query)).all()
-        posts = Post.query.filter(Post.title.contains(query) | Post.content.contains(query), Post.is_published==True).all()
+        posts = Post.query.filter(Post.title.contains(query) | Post.content.contains(query), Post.is_published == True).all()
         events = Event.query.filter(Event.title.contains(query) | Event.description.contains(query)).all()
         results = [{'type': 'page', 'item': page} for page in pages] + \
                   [{'type': 'post', 'item': post} for post in posts] + \

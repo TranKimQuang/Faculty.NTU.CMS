@@ -1,12 +1,15 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_user, logout_user, login_required, current_user
-
-from app.decorators import admin_required
-from app.models import User
 from app import db
-from werkzeug.security import generate_password_hash, check_password_hash # Đảm bảo cả hai đều được import
+from app.decorators import admin_required
+from app.repositories.user_repository import UserRepository
+from app.models import User
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint('auth', __name__)
+
+# Khởi tạo repository
+user_repo = UserRepository()
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -15,20 +18,19 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
+        user = user_repo.get_by_username(username)
         if user and user.check_password(password):
             login_user(user)
-
-
             return redirect(url_for('admin.dashboard'))
         flash('Invalid username or password.', 'danger')
     return render_template('admin/login.html')
+
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-
     return redirect(url_for('main.index'))
+
 @auth.route('/users', methods=['GET', 'POST'])
 @admin_required
 def users():
@@ -37,32 +39,26 @@ def users():
             username = request.form.get('username')
             password = request.form.get('password')
             role = request.form.get('role')
-            existing_user = User.query.filter_by(username=username).first()
+            existing_user = user_repo.get_by_username(username)
             if existing_user:
                 flash('Username already exists.', 'danger')
                 return redirect(url_for('auth.users'))
-            new_user = User(username=username, role=role)
-            new_user.set_password(password)
-            db.session.add(new_user)
-            db.session.commit()
+            user_repo.create(username, role, password)
             flash('User created successfully.', 'success')
         elif 'update' in request.form:
             user_id = request.form.get('user_id')
-            user = User.query.get_or_404(user_id)
-            user.username = request.form.get('username')
-            user.role = request.form.get('role')
+            user = user_repo.get_by_id(user_id)
+            username = request.form.get('username')
+            role = request.form.get('role')
             password = request.form.get('password')
-            if password:
-                user.set_password(password)
-            db.session.commit()
+            user_repo.update(user, username, role, password)
             flash('User updated successfully.', 'success')
         elif 'delete' in request.form:
             user_id = request.form.get('user_id')
-            user = User.query.get_or_404(user_id)
-            db.session.delete(user)
-            db.session.commit()
+            user = user_repo.get_by_id(user_id)
+            user_repo.delete(user)
             flash('User deleted successfully.', 'success')
         return redirect(url_for('auth.users'))
 
-    users = User.query.all()
+    users = user_repo.get_all()
     return render_template('auth/users.html', users=users)

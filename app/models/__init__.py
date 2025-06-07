@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app.extensions import db
 
 from .User import User
 from .Post import Post
