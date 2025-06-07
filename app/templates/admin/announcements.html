@@ -6,28 +6,34 @@
     <h3 class="mt-5 mb-3">Quản lý Thông báo </h3>
 
     {% if current_user.has_permission('create') %}
-    <form method="POST" enctype="multipart/form-data" action="{% if editing_announcement %}{{ url_for('announcements.edit_announcement', id=editing_announcement.id) }}{% else %}{{ url_for('announcements.manage_announcements') }}{% endif %}">
-        <div class="mb-3">
-            <label for="title" class="form-label">Tiêu đề</label>
-            <input type="text" class="form-control" id="title" name="title" value="{% if editing_announcement %}{{ editing_announcement.title }}{% endif %}" required>
+    {# Bọc Form tạo/sửa thông báo trong Card #}
+    <div class="card mb-4 shadow-sm hover-effect">
+        <div class="card-body">
+            <h5 class="card-title">{% if editing_announcement %}Chỉnh sửa Thông báo{% else %}Tạo Thông báo Mới{% endif %}</h5>
+            <form method="POST" enctype="multipart/form-data" action="{% if editing_announcement %}{{ url_for('announcements.edit_announcement', id=editing_announcement.id) }}{% else %}{{ url_for('announcements.manage_announcements') }}{% endif %}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Tiêu đề</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{% if editing_announcement %}{{ editing_announcement.title }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Nội dung</label>
+                    <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_announcement %}{{ editing_announcement.content }}{% endif %}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">Ngày bắt đầu</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" value="{% if editing_announcement %}{{ editing_announcement.start_date.strftime('%Y-%m-%d') }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">Ngày kết thúc</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" value="{% if editing_announcement %}{{ editing_announcement.end_date.strftime('%Y-%m-%d') }}{% endif %}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">{% if editing_announcement %}Cập nhật Thông báo{% else %}Tạo Thông báo{% endif %}</button>
+                {% if editing_announcement %}
+                <a href="{{ url_for('announcements.manage_announcements') }}" class="btn btn-secondary">Hủy</a>
+                {% endif %}
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="content" class="form-label">Nội dung</label>
-            <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_announcement %}{{ editing_announcement.content }}{% endif %}</textarea>
-        </div>
-        <div class="mb-3">
-            <label for="start_date" class="form-label">Ngày bắt đầu</label>
-            <input type="date" class="form-control" id="start_date" name="start_date" value="{% if editing_announcement %}{{ editing_announcement.start_date.strftime('%Y-%m-%d') }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="end_date" class="form-label">Ngày kết thúc</label>
-            <input type="date" class="form-control" id="end_date" name="end_date" value="{% if editing_announcement %}{{ editing_announcement.end_date.strftime('%Y-%m-%d') }}{% endif %}" required>
-        </div>
-        <button type="submit" class="btn btn-primary">{% if editing_announcement %}Cập nhật Thông báo{% else %}Tạo Thông báo{% endif %}</button>
-        {% if editing_announcement %}
-        <a href="{{ url_for('announcements.manage_announcements') }}" class="btn btn-secondary">Hủy</a>
-        {% endif %}
-    </form>
+    </div>
     {% endif %}
 
     <h3 class="mt-5 mb-3">Thông báo hiện có</h3>

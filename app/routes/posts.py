@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import current_user, login_required
 from app import db
-from app.decorators import admin_required
+from app.decorators import admin_required, editor_required
 from app.models import Post, Category
 from datetime import datetime
 import os
@@ -11,7 +11,7 @@ import uuid
 posts = Blueprint('posts', __name__)
 
 @posts.route('/posts', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def manage_posts():
     editing_post = None
     if request.method == 'POST':
@@ -72,7 +72,7 @@ def manage_posts():
     return render_template('admin/posts.html', posts=posts, categories=categories, editing_post=editing_post)
 
 @posts.route('/admin/posts/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def edit_post(id):
     post = Post.query.get_or_404(id)
     if request.method == 'POST':

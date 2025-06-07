@@ -9,3 +9,10 @@ def admin_required(f):
             abort(403)  # Forbidden
         return f(*args, **kwargs)
     return decorated_function
+def editor_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.role != 'admin' or current_user.role != 'editor':
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function

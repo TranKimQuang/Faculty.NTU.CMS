@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.decorators import admin_required
+from app.decorators import admin_required, editor_required
 from app.models import Announcement
 from datetime import datetime
 import os
@@ -11,7 +11,7 @@ announcements = Blueprint('announcements', __name__)
 
 
 @announcements.route('/announcements', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def manage_announcements():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -37,7 +37,8 @@ def manage_announcements():
 
 
 @announcements.route('/announcements/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required
+@login_required
+
 def edit_announcement(id):
     announcement = Announcement.query.get_or_404(id)
 
@@ -65,10 +66,6 @@ def edit_announcement(id):
 @announcements.route('/announcements/delete/<int:id>')
 @admin_required
 def delete_announcement(id):
-    if current_user.role != 'admin':
-        flash('You do not have permission to delete announcements.', 'danger')
-        return redirect(url_for('announcements.manage_announcements'))
-
     announcement = Announcement.query.get_or_404(id)
     db.session.delete(announcement)
     db.session.commit()

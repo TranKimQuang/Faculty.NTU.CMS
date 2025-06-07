@@ -6,25 +6,30 @@
     <h3 class="mt-5 mb-3">Quản lý Trang</h3>
 
     {% if current_user.has_permission('create') %}
-    <!-- Form tạo/sửa trang -->
-    <form method="POST" action="{% if editing_page %}{{ url_for('pages.edit_page', id=editing_page.id) }}{% else %}{{ url_for('pages.manage_pages') }}{% endif %}">
-        <div class="mb-3">
-            <label for="title" class="form-label">Tiêu đề</label>
-            <input type="text" class="form-control" id="title" name="title" value="{% if editing_page %}{{ editing_page.title }}{% endif %}" required>
+    {# Bọc Form tạo/sửa trang trong Card #}
+    <div class="card mb-4 shadow-sm hover-effect">
+        <div class="card-body">
+            <h5 class="card-title">{% if editing_page %}Chỉnh sửa Trang{% else %}Tạo Trang Mới{% endif %}</h5>
+            <form method="POST" action="{% if editing_page %}{{ url_for('pages.edit_page', id=editing_page.id) }}{% else %}{{ url_for('pages.manage_pages') }}{% endif %}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Tiêu đề</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{% if editing_page %}{{ editing_page.title }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="slug" class="form-label">Đường dẫn (Slug)</label>
+                    <input type="text" class="form-control" id="slug" name="slug" value="{% if editing_page %}{{ editing_page.slug }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Nội dung</label>
+                    <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_page %}{{ editing_page.content }}{% endif %}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">{% if editing_page %}Cập nhật Trang{% else %}Tạo Trang{% endif %}</button>
+                {% if editing_page %}
+                <a href="{{ url_for('pages.manage_pages') }}" class="btn btn-secondary">Hủy</a>
+                {% endif %}
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="slug" class="form-label">Đường dẫn (Slug)</label>
-            <input type="text" class="form-control" id="slug" name="slug" value="{% if editing_page %}{{ editing_page.slug }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="content" class="form-label">Nội dung</label>
-            <textarea class="form-control ckeditor" id="content" name="content" rows="10">{% if editing_page %}{{ editing_page.content }}{% endif %}</textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">{% if editing_page %}Cập nhật Trang{% else %}Tạo Trang{% endif %}</button>
-        {% if editing_page %}
-        <a href="{{ url_for('pages.manage_pages') }}" class="btn btn-secondary">Hủy</a>
-        {% endif %}
-    </form>
+    </div>
     {% endif %}
 
     <!-- Danh sách các trang -->

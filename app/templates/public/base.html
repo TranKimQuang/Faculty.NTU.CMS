@@ -9,12 +9,16 @@
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <style>
         body {
-
+            /* Các biến CSS cho gradient từ settings_map */
             {% if settings_map.gradient_start_color %}
             --gradient-start: {{ settings_map.gradient_start_color }};
+            {% else %}
+            --gradient-start: #f8f9fa; /* Màu mặc định nếu không có */
             {% endif %}
             {% if settings_map.gradient_end_color %}
             --gradient-end: {{ settings_map.gradient_end_color }};
+            {% else %}
+            --gradient-end: #e2e3e5; /* Màu mặc định nếu không có */
             {% endif %}
 
             /* Áp dụng gradient với các biến đã định nghĩa */
@@ -22,12 +26,77 @@
             min-height: 100vh;
             font-family: 'Roboto', sans-serif;
         }
+
+        /* Tùy chỉnh Navbar */
+        #navbar {
+            background-color: rgba(0, 50, 100, 0.9); /* Màu xanh đậm của đại học, có độ trong suốt */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* Thêm bóng nhẹ cho navbar */
+        }
+
+        .navbar-brand {
+            font-weight: 700; /* In đậm tiêu đề trang */
+            font-size: 1.5rem;
+            color: #ffffff !important;
+            display: flex; /* Sử dụng flexbox để căn chỉnh logo và tiêu đề */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .navbar-brand img {
+            max-height: 40px; /* Chiều cao tối đa cho logo */
+            margin-right: 10px; /* Khoảng cách giữa logo và tiêu đề/tên trang */
+            border-radius: 5px; /* Bo góc nhẹ cho logo */
+        }
+
+        .nav-link {
+            color: #ffffff !important; /* Màu chữ trắng cho các liên kết */
+            transition: color 0.3s ease-in-out; /* Hiệu ứng chuyển màu khi hover */
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important; /* Màu vàng khi hover */
+        }
+
+        .dropdown-menu {
+            background-color: rgba(0, 50, 100, 0.9); /* Màu nền dropdown giống navbar */
+            border: none; /* Bỏ viền */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Bóng cho dropdown */
+        }
+
+        .dropdown-item {
+            color: #ffffff !important; /* Màu chữ trắng cho các mục dropdown */
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.2) !important; /* Nền mờ khi hover */
+            color: #ffc107 !important; /* Chữ vàng khi hover */
+        }
+
+        .btn-outline-light {
+            border-color: #ffffff;
+            color: #ffffff;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #ffffff;
+            color: #003264; /* Chữ màu xanh đậm khi hover */
+        }
+
+        /* Đảm bảo nội dung không bị navbar che khuất */
+        .container.my-5.pt-5 {
+            padding-top: 80px !important; /* Đủ khoảng cách cho navbar cố định */
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
         <div class="container">
              <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                {# Kiểm tra xem có URL logo trong settings_map không #}
+                {% if settings_map.site_logo_url %}
+                    <img src="{{ settings_map.site_logo_url }}" alt="Logo Trang Web" onerror="this.onerror=null;this.src='https://placehold.co/40x40/003264/ffffff?text=LOGO';" style="height: 40px; margin-right: 10px; border-radius: 5px;">
+                {% endif %}
                 {% if settings_map.site_title %}{{ settings_map.site_title }}{% else %}Hệ thống CMS Đại học Nha Trang{% endif %}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,13 +104,30 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index') }}">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.all_posts') }}">Bài viết</a>
-                    </li>
+                    {# Duyệt qua các menu cấp cao nhất (root menus) #}
+                    {% for menu_item in dynamic_menus %}
+                        {# Kiểm tra xem menu_item có menu con hay không #}
+                        {% if menu_item.children %}
+                            {# Nếu có con, render là một dropdown #}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="{{ menu_item.url }}" id="navbarDropdown{{ menu_item.id }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ menu_item.name }}
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown{{ menu_item.id }}">
+                                    {% for child_menu in menu_item.children %}
+                                        <li><a class="dropdown-item" href="{{ child_menu.url }}">{{ child_menu.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            {# Nếu không có con, render là một nav-item đơn giản #}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ menu_item.url }}">{{ menu_item.name }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
 
+                    {# Các mục menu tĩnh cho Danh mục bài viết (không thay đổi) #}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Danh mục bài viết
@@ -53,15 +139,6 @@
                             <li><span class="dropdown-item text-muted">Chưa có danh mục</span></li>
                             {% endfor %}
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.pages') }}">Trang</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.events') }}"> Sự kiện</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.announcements') }}">Thông báo</a>
                     </li>
                 </ul>
                 <form class="d-flex" action="{{ url_for('main.search') }}" method="GET">

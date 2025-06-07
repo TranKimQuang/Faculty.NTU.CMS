@@ -6,35 +6,41 @@
     <h3 class="mt-5 mb-3">Quản lý Menu</h3>
 
     {% if current_user.has_permission('create') %}
-    <form method="POST" action="{% if editing_menu %}{{ url_for('menus.edit_menu', id=editing_menu.id) }}{% else %}{{ url_for('menus.manage_menus') }}{% endif %}">
-        <div class="mb-3">
-            <label for="name" class="form-label">Tên Menu</label>
-            <input type="text" class="form-control" id="name" name="name" value="{% if editing_menu %}{{ editing_menu.name }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="url" class="form-label">URL</label>
-            <input type="text" class="form-control" id="url" name="url" value="{% if editing_menu %}{{ editing_menu.url }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="order" class="form-label">Thứ tự</label>
-            <input type="number" class="form-control" id="order" name="order" value="{% if editing_menu %}{{ editing_menu.order }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="parent_id" class="form-label">Menu Cha</label>
-            <select class="form-control" id="parent_id" name="parent_id">
-                <option value="">Không có</option>
-                {% for menu in menus %}
-                {% if not editing_menu or (editing_menu and editing_menu.id != menu.id) %}
-                <option value="{{ menu.id }}" {% if editing_menu and editing_menu.parent_id == menu.id %}selected{% endif %}>{{ menu.name }}</option>
+    {# Bọc Form tạo/sửa menu trong Card #}
+    <div class="card mb-4 shadow-sm hover-effect">
+        <div class="card-body">
+            <h5 class="card-title">{% if editing_menu %}Chỉnh sửa Menu{% else %}Tạo Menu Mới{% endif %}</h5>
+            <form method="POST" action="{% if editing_menu %}{{ url_for('menus.edit_menu', id=editing_menu.id) }}{% else %}{{ url_for('menus.manage_menus') }}{% endif %}">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên Menu</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{% if editing_menu %}{{ editing_menu.name }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="url" class="form-label">URL</label>
+                    <input type="text" class="form-control" id="url" name="url" value="{% if editing_menu %}{{ editing_menu.url }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="order" class="form-label">Thứ tự</label>
+                    <input type="number" class="form-control" id="order" name="order" value="{% if editing_menu %}{{ editing_menu.order }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="parent_id" class="form-label">Menu Cha</label>
+                    <select class="form-control" id="parent_id" name="parent_id">
+                        <option value="">Không có</option>
+                        {% for menu in menus %}
+                        {% if not editing_menu or (editing_menu and editing_menu.id != menu.id) %}
+                        <option value="{{ menu.id }}" {% if editing_menu and editing_menu.parent_id == menu.id %}selected{% endif %}>{{ menu.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">{% if editing_menu %}Cập nhật Menu{% else %}Tạo Menu{% endif %}</button>
+                {% if editing_menu %}
+                <a href="{{ url_for('menus.manage_menus') }}" class="btn btn-secondary">Hủy</a>
                 {% endif %}
-                {% endfor %}
-            </select>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary">{% if editing_menu %}Cập nhật Menu{% else %}Tạo Menu{% endif %}</button>
-        {% if editing_menu %}
-        <a href="{{ url_for('menus.manage_menus') }}" class="btn btn-secondary">Hủy</a>
-        {% endif %}
-    </form>
+    </div>
     {% endif %}
 
     <h3 class="mt-5 mb-3">Danh sách menu</h3>
@@ -57,16 +63,17 @@
                 <td>{{ menu.url }}</td>
                 <td>{{ menu.order }}</td>
                 <td>
+                    {# Sử dụng một biến tạm để tìm menu cha #}
+                    {% set parent_menu_name = 'Không có' %}
                     {% if menu.parent_id %}
                         {% for m in menus %}
                             {% if m.id == menu.parent_id %}
-                                {{ m.name }}
+                                {% set parent_menu_name = m.name %}
+                                {# Removed: {% break %} - Jinja2 does not support 'break' #}
                             {% endif %}
                         {% endfor %}
-                        {% if not loop.last %}Không xác định{% endif %}
-                    {% else %}
-                        Không có
                     {% endif %}
+                    {{ parent_menu_name }}
                 </td>
                 {% if current_user.has_permission('edit') %}
                 <td>

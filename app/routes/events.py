@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.decorators import admin_required
+from app.decorators import admin_required, editor_required
 from app.models import Event
 from datetime import datetime
 import os
@@ -11,7 +11,7 @@ events = Blueprint('events', __name__)
 
 
 @events.route('/events', methods=['GET', 'POST'])
-
+@login_required
 def manage_events():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -46,7 +46,7 @@ def manage_events():
 
 
 @events.route('/events/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def edit_event(id):
     event = Event.query.get_or_404(id)
 

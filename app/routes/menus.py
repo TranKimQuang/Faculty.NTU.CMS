@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
+from app.decorators import admin_required
 from app.models import Menu
 
 menus = Blueprint('menus', __name__)
@@ -50,12 +51,8 @@ def edit_menu(id):
     return render_template('admin/menus.html', menus=menus, editing_menu=menu, Menu=Menu)
 
 @menus.route('/menus/delete/<int:id>')
-@login_required
+@admin_required
 def delete_menu(id):
-    if current_user.role != 'admin':
-        flash('You do not have permission to delete menus.', 'danger')
-        return redirect(url_for('menus.manage_menus'))
-
     menu = Menu.query.get_or_404(id)
     db.session.delete(menu)
     db.session.commit()

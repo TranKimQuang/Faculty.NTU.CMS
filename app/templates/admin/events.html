@@ -6,38 +6,43 @@
     <h3 class="mt-5 mb-3">Quản lý sự kiện</h3>
 
     {% if current_user.has_permission('create') %}
-    <!-- Form tạo/sửa sự kiện -->
-    <form method="POST" enctype="multipart/form-data" action="{% if editing_event %}{{ url_for('events.edit_event', id=editing_event.id) }}{% else %}{{ url_for('events.manage_events') }}{% endif %}">
-        <div class="mb-3">
-            <label for="title" class="form-label">Tiêu đề</label>
-            <input type="text" class="form-control" id="title" name="title" value="{% if editing_event %}{{ editing_event.title }}{% endif %}" required>
+    {# Bọc Form tạo/sửa sự kiện trong Card #}
+    <div class="card mb-4 shadow-sm hover-effect">
+        <div class="card-body">
+            <h5 class="card-title">{% if editing_event %}Chỉnh sửa Sự kiện{% else %}Tạo Sự kiện Mới{% endif %}</h5>
+            <form method="POST" enctype="multipart/form-data" action="{% if editing_event %}{{ url_for('events.edit_event', id=editing_event.id) }}{% else %}{{ url_for('events.manage_events') }}{% endif %}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Tiêu đề</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{% if editing_event %}{{ editing_event.title }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Mô tả</label>
+                    <textarea class="form-control ckeditor" id="description" name="description" rows="10">{% if editing_event %}{{ editing_event.description }}{% endif %}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="event_date" class="form-label">Ngày diễn ra</label>
+                    <input type="date" class="form-control" id="event_date" name="event_date" value="{% if editing_event %}{{ editing_event.event_date.strftime('%Y-%m-%d') }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Địa điểm</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{% if editing_event %}{{ editing_event.location }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Hình ảnh</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    {% if editing_event and editing_event.image %}
+                    <p class="mt-2">
+                        <small>Hình ảnh hiện tại: <a href="{{ url_for('static', filename=editing_event.image) }}" target="_blank">{{ editing_event.image }}</a></small>
+                    </p>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">{% if editing_event %}Cập nhật sự kiện{% else %}Tạo sự kiện{% endif %}</button>
+                {% if editing_event %}
+                <a href="{{ url_for('events.manage_events') }}" class="btn btn-secondary">Hủy</a>
+                {% endif %}
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea class="form-control ckeditor" id="description" name="description" rows="10">{% if editing_event %}{{ editing_event.description }}{% endif %}</textarea>
-        </div>
-        <div class="mb-3">
-            <label for="event_date" class="form-label">Ngày diễn ra</label>
-            <input type="date" class="form-control" id="event_date" name="event_date" value="{% if editing_event %}{{ editing_event.event_date.strftime('%Y-%m-%d') }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="location" class="form-label">Địa điểm</label>
-            <input type="text" class="form-control" id="location" name="location" value="{% if editing_event %}{{ editing_event.location }}{% endif %}" required>
-        </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Hình ảnh</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*">
-            {% if editing_event and editing_event.image %}
-            <p class="mt-2">
-                <small>Hình ảnh hiện tại: <a href="{{ url_for('static', filename=editing_event.image) }}" target="_blank">{{ editing_event.image }}</a></small>
-            </p>
-            {% endif %}
-        </div>
-        <button type="submit" class="btn btn-primary">{% if editing_event %}Cập nhật sự kiện{% else %}Tạo sự kiện{% endif %}</button>
-        {% if editing_event %}
-        <a href="{{ url_for('events.manage_events') }}" class="btn btn-secondary">Hủy</a>
-        {% endif %}
-    </form>
+    </div>
     {% endif %}
 
     <!-- Danh sách sự kiện hiện có -->

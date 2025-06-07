@@ -1,14 +1,14 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
-from app.decorators import admin_required
+from app.decorators import admin_required, editor_required
 from app.models import Category
 
 categories = Blueprint('categories', __name__)
 
 
 @categories.route('/categories', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def manage_categories():
     if request.method == 'POST':
         name = request.form.get('name')
@@ -30,7 +30,7 @@ def manage_categories():
 
 
 @categories.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
-@admin_required
+@login_required
 def edit_category(id):
     category = Category.query.get_or_404(id)
 
@@ -55,10 +55,6 @@ def edit_category(id):
 @categories.route('/categories/delete/<int:id>')
 @admin_required
 def delete_category(id):
-    if current_user.role != 'Admin':
-        flash('You do not have permission to delete categories.', 'danger')
-        return redirect(url_for('categories.manage_categories'))
-
     category = Category.query.get_or_404(id)
     db.session.delete(category)
     db.session.commit()
