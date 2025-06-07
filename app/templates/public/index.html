@@ -16,7 +16,7 @@
                     <section class="mb-5">
                         <h3 class="mb-3">Bài viết mới nhất</h3>
                         <div class="row">
-                            {% for post in posts %}
+                            {% for post in posts.items %}
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100 hover-effect">
                                     {% if post.image %}
@@ -24,7 +24,6 @@
                                     {% endif %}
                                     <div class="card-body">
                                         <h5 class="card-title">{{ post.title }}</h5>
-                                        <p class="card-text">{{ post.content | safe | truncate(200) }}</p>
                                         <a href="{{ url_for('main.post_detail', slug=post.slug) }}" class="btn btn-primary btn-sm">Xem thêm</a>
                                     </div>
                                     <div class="card-footer">
@@ -40,6 +39,22 @@
                             </div>
                             {% endfor %}
                         </div>
+                        <!-- Thanh phân trang -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {% if not posts.has_prev %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ url_for('main.index', page=posts.prev_num) if posts.has_prev else '#' }}">Trước</a>
+                                </li>
+                                {% for page_num in posts.iter_pages() %}
+                                <li class="page-item {% if page_num == posts.page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                                {% endfor %}
+                                <li class="page-item {% if not posts.has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ url_for('main.index', page=posts.next_num) if posts.has_next else '#' }}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </section>
                     <section class="mb-5">
                         <h3 class="mb-3">Các trang</h3>

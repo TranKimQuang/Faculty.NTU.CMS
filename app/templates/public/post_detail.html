@@ -1,26 +1,84 @@
 {% extends "public/base.html" %}
 
-{% block title %}{{ post.title }} - CMS Đại học Nha Trang{% endblock %}
+ {% block title %}{{ post.title }} - University CMS{% endblock %}
 
-{% block content %}
-<div class="maincontent">
-    <h2 class="text-center mb-4">{{ post.title }}</h2>
-    <section class="mb-5">
-    <div class="card shadow-sm">
-        {% if post.image %}
-        <img src="{{ url_for('static', filename=post.image) }}" class="card-img-top img-fluid" alt="{{ post.title }}">
-        {% endif %}
-        <div class="card-body">
-            <div class="card-text">{{ post.content | safe }}</div>
-            <p class="card-text text-muted mt-3">
-                <small>
-                    Danh mục: <a href="{{ url_for('main.posts', slug=post.category.slug) }}" class="text-decoration-none">{{ post.category.name }}</a> |
-                    Đăng ngày: {{ post.created_at.strftime('%d/%m/%Y') }} |
-                    Cập nhật: {{ post.updated_at.strftime('%d/%m/%Y') if post.updated_at else post.created_at.strftime('%d/%m/%Y') }}
-                </small>
-            </p>
-        </div>
-        </div>
-    </section>
-</div>
-{% endblock %}
+ {% block content %}
+ <div class="container py-4">
+     <nav aria-label="breadcrumb">
+         <ol class="breadcrumb bg-light p-2 rounded">
+             <li class="breadcrumb-item">
+                 <a href="{{ url_for('main.index') }}" class="text-decoration-none text-info"><i class="fas fa-home"></i> Trang chủ</a>
+             </li>
+             <li class="breadcrumb-item">
+                 <a href="{{ url_for('main.posts', slug=post.category.slug) }}" class="text-decoration-none text-info">{{ post.category.name }}</a>
+             </li>
+             <li class="breadcrumb-item active text-secondary" aria-current="page">{{ post.title }}</li>
+         </ol>
+     </nav>
+
+     <div class="row">
+         <div class="col-lg-8">
+             <div class="maincontent">
+                 <h2 class="text-center mb-4">{{ post.title }}</h2>
+                 <section class="mb-5">
+                     <div class="card shadow-sm">
+                         {% if post.image %}
+                         <img src="{{ url_for('static', filename=post.image) }}" class="card-img-top img-fluid rounded" alt="{{ post.title }}">
+                         {% endif %}
+                         <div class="card-body">
+                             <div class="card-text">{{ post.content | safe }}</div>
+                             <p class="card-text text-muted mt-3">
+                                 <small>
+                                     Danh mục: <a href="{{ url_for('main.posts', slug=post.category.slug) }}" class="text-decoration-none text-info">{{ post.category.name }}</a> |
+                                     Đăng ngày: {{ post.created_at.strftime('%d/%m/%Y') }} |
+                                     Cập nhật: {{ post.updated_at.strftime('%d/%m/%Y') if post.updated_at else post.created_at.strftime('%d/%m/%Y') }}
+                                 </small>
+                             </p>
+                             <div class="mt-3">
+                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ url_for('main.post_detail', slug=post.slug, _external=True) }}" target="_blank" class="btn btn-primary btn-sm me-2"><i class="fab fa-facebook-f"></i> Facebook </a>
+                                 <a href="https://twitter.com/intent/tweet?url={{ url_for('main.post_detail', slug=post.slug, _external=True) }}" target="_blank" class="btn btn-info btn-sm"><i class="fab fa-twitter"></i> Tweet </a>
+                             </div>
+                         </div>
+                     </div>
+                 </section>
+             </div>
+         </div>
+
+         <div class="col-lg-4">
+             <div class="card shadow-sm mb-4">
+                 <div class="card-header bg-primary text-white py-3">
+                     <h5 class="mb-0"><i class="fas fa-list"></i> Danh mục</h5>
+                 </div>
+                 <div class="card-body">
+                     <ul class="list-group list-group-flush">
+                         {% for cat in categories %}
+                         <li class="list-group-item d-flex justify-content-between align-items-center">
+                             <a href="{{ url_for('main.posts', slug=cat.slug) }}" class="text-decoration-none text-secondary">{{ cat.name }}</a>
+                             <span class="badge bg-secondary rounded-pill">{{ cat.posts|length }}</span>
+                         </li>
+                         {% endfor %}
+                     </ul>
+                 </div>
+             </div>
+
+             <div class="card shadow-sm">
+                 <div class="card-header bg-success text-white py-3">
+                     <h5 class="mb-0"><i class="fas fa-newspaper"></i> Bài viết khác</h5>
+                 </div>
+                 <div class="card-body">
+                     <ul class="list-group list-group-flush">
+                        {% for other_post in other_posts %}
+                        <li class="list-group-item">
+                            <a href="{{ url_for('main.post_detail', slug=other_post.slug) }}" class="text-decoration-none text-dark">{{ other_post.title }}</a>
+                            <small class="text-muted">{{ other_post.created_at.strftime('%d/%m/%Y') }}</small>
+                        </li>
+                        {% else %} <li class="list-group-item text-muted">Không có bài viết khác.</li>
+                        {% endfor %}
+                    </ul>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+ <script src="https://kit.fontawesome.com/your_fontawesome_kit.js" crossorigin="anonymous"></script>
+ {% endblock %}

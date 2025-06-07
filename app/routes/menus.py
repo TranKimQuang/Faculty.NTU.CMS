@@ -7,7 +7,7 @@ from app.models import Menu
 menus = Blueprint('menus', __name__)
 
 @menus.route('/menus', methods=['GET', 'POST'])
-@login_required
+@admin_required
 def manage_menus():
     if request.method == 'POST':
         name = request.form.get('name')

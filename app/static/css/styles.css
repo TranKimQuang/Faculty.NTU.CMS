@@ -9,7 +9,7 @@
 body {
     /* Gradient cố định từ xanh dương (#007bff) đến trắng (#ffffff) */
     /* Mặc định nếu không có giá trị từ Jinja2 */
-    --gradient-start: #007bff; /* Xanh dương */
+    --gradient-start: #f5f5f5;
     --gradient-end: #ffffff;  /* Trắng */
 
     /* Áp dụng gradient với các biến */
@@ -25,11 +25,6 @@ body {
     border-radius: 10px;
     min-height: 100vh; /* Đảm bảo maincontent chiếm toàn bộ chiều cao của viewport */
     background: transparent; /* Loại bỏ nền cũ của maincontent, để thấy gradient của body */
-    /*
-     * Lưu ý: Nếu bạn muốn maincontent có nền màu trắng nhưng vẫn có border-radius,
-     * hãy thay đổi `background: transparent;` thành `background-color: white;`
-     * hoặc `background-color: rgba(255, 255, 255, 0.9);`
-     */
 }
 
 /* Container chính của nội dung (ví dụ: chứa welcome message, bài viết, v.v.) */
@@ -45,7 +40,7 @@ body {
 
 /* ==================== 3. Thanh điều hướng (Navbar Styles) ==================== */
 .navbar {
-    background: linear-gradient(to right, blue, cyan); /* Gradient đen bạc */
+    background: linear-gradient(to bottom, blue, cyan); !important; /* Gradient đen bạc */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

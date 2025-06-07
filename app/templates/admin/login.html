@@ -7,17 +7,17 @@
 </head>
 
 <div class="login-container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
+
+    <div class="login-card fade-in">
+        <h2 class="text-center mb-4">Đăng nhập hệ thống</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
               <div class="alert alert-{{ category }}">{{ message }}</div>
             {% endfor %}
           {% endif %}
         {% endwith %}
-    <div class="login-card fade-in">
-        <h2 class="text-center mb-4">Đăng nhập hệ thống</h2>
-
-
 
         <form method="POST" action="{{ url_for('auth.login') }}">
             <div class="mb-3">
