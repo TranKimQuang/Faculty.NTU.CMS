@@ -155,11 +155,13 @@ body {
 .card, .list-group-item {
     transition: transform 0.2s, box-shadow 0.2s; /* Hiệu ứng chuyển động mượt mà */
     background: rgba(255, 255, 255, 0.9); /* Nền trắng mờ để dễ đọc */
-    border: none; /* Loại bỏ viền mặc định của card */
+    border: none;/* Loại bỏ viền mặc định của card */
     border-radius: 10px; /* Bo góc card */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
 }
-
+.category-item {
+    margin-bottom: 10px; /* Khoảng cách 10px giữa các mục */
+}
 .card:hover {
     transform: translateY(-5px); /* Di chuyển lên trên khi hover */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Đổ bóng đậm hơn khi hover */
@@ -178,7 +180,13 @@ body {
 }
 
 .list-group-item {
+border-bottom: 1px solid #dee2e6; /* Giữ viền mặc định nhưng thêm khoảng cách */
+    padding: 0.75rem 1.25rem;
     border-radius: 8px; /* Bo góc cho item trong list group */
+}
+.other-post-item {
+    margin-bottom: 15px !important; /* Tăng khoảng cách lên 15px và dùng !important để ghi đè */
+    padding: 10px 15px; /* Tăng padding trong item để đẹp hơn */
 }
 
 .card-title {

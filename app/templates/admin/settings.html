@@ -1,60 +1,104 @@
 {% extends "admin/base.html" %}
+
 {% block title %}Cài đặt - CMS Đại học Nha Trang{% endblock %}
+
 {% block content %}
 <h3 class="mt-5 mb-3">Quản lý cài đặt</h3>
-<div class="maincontent">
-    <div class="container mt-5 pt-4">
-        {# Form để Tạo mới hoặc Chỉnh sửa Cài đặt - Đã được bọc trong Card #}
-        <div class="card mb-4 shadow-sm hover-effect">
-            <div class="card-body">
-                <h5 class="card-title">{% if editing_setting %}Chỉnh sửa Cài đặt{% else %}Thêm Cài đặt Mới{% endif %}</h5>
-                <form method="POST" action="{% if editing_setting %}{{ url_for('settings_bp.edit_setting', key=editing_setting.key) }}{% else %}{{ url_for('settings_bp.settings') }}{% endif %}">
-                    <div class="mb-3">
-                        <label for="key" class="form-label">Khóa</label>
-                        {# Nếu đang chỉnh sửa, trường khóa sẽ chỉ đọc (read-only) để tránh thay đổi key chính gây lỗi #}
-                        <input type="text" class="form-control" id="key" name="key" value="{% if editing_setting %}{{ editing_setting.key }}{% endif %}" {% if editing_setting %}readonly{% endif %} required>
-                        {% if editing_setting %}<small class="form-text text-muted">Không thể thay đổi khóa khi chỉnh sửa.</small>{% endif %}
-                    </div>
-                    <div class="mb-3">
-                        <label for="value" class="form-label">Giá trị</label>
-                        <input type="text" class="form-control" id="value" name="value" value="{% if editing_setting %}{{ editing_setting.value }}{% endif %}" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">{% if editing_setting %}Cập nhật Cài đặt{% else %}Tạo Cài đặt{% endif %}</button>
-                    {% if editing_setting %}
-                    <a href="{{ url_for('settings_bp.settings') }}" class="btn btn-secondary">Hủy</a>
-                    {% endif %}
-                </form>
-            </div>
-        </div>
 
-        <h3 class="mt-5">Các cài đặt hiện có</h3>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Khóa</th>
-                    <th>Giá trị</th>
-                    <th>Hành động</th> {# Thêm cột Hành động #}
-                </tr>
-            </thead>
-            <tbody>
-                {% for setting in settings %}
-                <tr>
-                    <td>{{ setting.key }}</td>
-                    <td>{{ setting.value }}</td>
-                    <td>
-                        <a href="{{ url_for('settings_bp.edit_setting', key=setting.key) }}" class="btn btn-sm btn-warning">Sửa</a>
-                        {% if current_user.has_permission('delete') %} {# Đảm bảo chỉ admin mới thấy nút xóa #}
-                        <a href="{{ url_for('settings_bp.delete_setting', key=setting.key) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cài đặt này không?');">Xóa</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="3" class="text-muted">Không có cài đặt nào.</td> {# Cập nhật colspan #}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="maincontent">
+  <div class="container mt-5 pt-4">
+
+    <div class="row">
+      {# Macro để tạo nhanh form cài đặt #}
+      {% macro setting_card(key_name, card_title, input_label, input_type='text', placeholder_text='', is_file_input=false, settings_list=none) %}
+        {% set current_setting = settings_list|selectattr('key', 'equalto', key_name)|first %}
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm hover-effect">
+            <div class="card-body">
+              <h5 class="card-title">{{ card_title }}</h5>
+              <form method="POST" action="{{ url_for('settings_bp.settings') }}" enctype="multipart/form-data">
+                <input type="hidden" name="key" value="{{ key_name }}">
+                <div class="mb-3">
+                  <label for="{{ key_name }}" class="form-label">{{ input_label }}</label>
+                  {% if is_file_input %}
+                    <input type="file" class="form-control" id="{{ key_name }}" name="{{ key_name }}" accept="image/*">
+                    {% if current_setting and current_setting.value %}
+                      <p class="mt-2">Hình hiện tại: <img src="{{ url_for('static', filename=current_setting.value) }}" alt="Current Image" style="max-width: 100px;"></p>
+                    {% endif %}
+                  {% elif input_type == 'color' %}
+                    <input type="color" class="form-control form-control-color" id="{{ key_name }}" name="{{ key_name }}" value="{{ current_setting.value if current_setting else '' }}" placeholder="{{ placeholder_text }}" required>
+                  {% else %}
+                    <input type="{{ input_type }}" class="form-control" id="{{ key_name }}" name="{{ key_name }}" value="{{ current_setting.value if current_setting else '' }}" placeholder="{{ placeholder_text }}" required>
+                  {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">{{ 'Cập nhật' if current_setting else 'Lưu' }}</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endmacro %}
+
+      {# Sử dụng macro cho từng cài đặt #}
+      {{ setting_card('site_name', 'Tên trang web', 'Tên trang web', 'text', 'Nhập tên trang web', false, settings) }}
+      {{ setting_card('site_title', 'Tiêu đề trang', 'Tiêu đề trang', 'text', 'Nhập tiêu đề trang', false, settings) }}
+      {{ setting_card('email', 'Email', 'Email', 'email', 'Nhập email', false, settings) }}
+      {{ setting_card('phone', 'Số điện thoại', 'Số điện thoại', 'tel', 'Nhập số điện thoại', false, settings) }}
+      {{ setting_card('site_welcome', 'Lời chào', 'Lời chào', 'text', 'Nhập lời chào', false, settings) }}
+      {{ setting_card('gradient_start_color', 'Màu gradient bắt đầu', 'Màu gradient bắt đầu', 'color', 'Chọn màu', false, settings) }}
+      {{ setting_card('gradient_end_color', 'Màu gradient kết thúc', 'Màu gradient kết thúc', 'color', 'Chọn màu', false, settings) }}
+
+      {{ setting_card('address', 'Địa chỉ', 'Địa chỉ', 'text', 'Nhập địa chỉ', false, settings) }}
+        {{ setting_card('site_logo_url', 'Logo', 'Logo', 'file', '', true, settings) }} {# is_file_input=true #}
     </div>
+
+    <h3 class="mt-5">Các cài đặt hiện có</h3>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Loại</th>
+          <th>Giá trị</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for setting in settings %}
+        <tr>
+          <td>{{ {
+            'site_name': 'Tên trang web',
+            'site_title': 'Tiêu đề trang',
+            'email': 'Email',
+            'phone': 'Số điện thoại',
+            'site_welcome': 'Lời chào',
+            'gradient_start_color': 'Màu gradient bắt đầu',
+            'gradient_end_color': 'Màu gradient kết thúc',
+            'site_logo_url': 'Logo',
+            'address': 'Địa chỉ'
+          }[setting.key] if setting.key in FIELD_NAMES else setting.key }}</td>
+          <td>
+            {% if setting.key == 'site_logo_url' %}
+              {% if setting.value %}
+                <img src="{{ url_for('static', filename=setting.value) }}" alt="{{ setting.key }}" style="max-width: 100px;">
+              {% else %}
+                Không có ảnh
+              {% endif %}
+            {% else %}
+              {{ setting.value }}
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('settings_bp.edit_setting', key=setting.key) }}" class="btn btn-sm btn-warning">Sửa</a>
+            {% if current_user.has_permission('delete') %}
+              <a href="{{ url_for('settings_bp.delete_setting', key=setting.key) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cài đặt này không?');">Xóa</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="3" class="text-muted">Không có cài đặt nào.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
